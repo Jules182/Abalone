@@ -6,7 +6,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
 /**
- * Class which defines a hexagonal button This is an element of the Hexagonal board which will have neighbours
+ * Class which defines a hexagonal button 
+ * 
+ * This is an element of the Hexagonal board which will have neighbours
  * 
  * @author alexcronin
  *
@@ -23,7 +25,7 @@ public class Cell extends Control {
 		polygon.getPoints().addAll(makeVertices(this.radius, this.sides));
 		polygon.setStroke(Color.RED);
 		this.setShape(polygon);
-
+		
 		// add some listeners for clicks
 	}
 

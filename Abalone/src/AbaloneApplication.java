@@ -4,6 +4,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class AbaloneApplication extends Application {
@@ -30,12 +31,13 @@ public class AbaloneApplication extends Application {
 		mi_quit = new MenuItem("Quit");
 		menuFile.getItems().addAll(mi_hello, mi_quit);
 		mainlayout.getChildren().addAll(menubar, cc_custom);
+		
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Abalone Game Team Markus&Julian");
-		primaryStage.setScene(new Scene(mainlayout, 600, 600));
+		primaryStage.setScene(new Scene(mainlayout, 600, 600, Color.BLACK));
 		primaryStage.show();
 	}
 

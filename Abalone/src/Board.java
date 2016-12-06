@@ -4,10 +4,11 @@
  *
  */
 
+@Deprecated
 public class Board {
 
 	// variablen:
-	private Cell[][] cells = new Cell[9][9]; // array in dem die Zellen gespeichert sind, das iteriere ich komplett durch
+	private Cell[][] cells = new Cell[11][11]; // array in dem die Zellen gespeichert sind, das iteriere ich komplett durch
 
 	public Board() {		
 		for (int i = 0; i < cells.length; i++) {
