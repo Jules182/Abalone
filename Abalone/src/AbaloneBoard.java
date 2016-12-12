@@ -1,3 +1,4 @@
+import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -23,7 +24,9 @@ public class AbaloneBoard extends Pane {
 		vbox = new VBox(); // VBox with 10px spacing
 		hboxes = new HBox[11];
 		for (int i = 0; i < hboxes.length; i++) {
-			hboxes[i] = new HBox();
+			HBox hbox = new HBox();
+			hbox.setAlignment(Pos.CENTER);
+			hboxes[i] =  hbox;
 		}
 
 		for (int i = 0; i < cells.length; i++) {
