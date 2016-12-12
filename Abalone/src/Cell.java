@@ -1,12 +1,10 @@
-import java.util.Arrays;
-
-import javafx.scene.control.Button;
 import javafx.scene.control.Control;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
 /**
- * Class which defines a hexagonal button 
+ * Class which defines a hexagonal button
  * 
  * This is an element of the Hexagonal board which will have neighbours
  * 
@@ -20,13 +18,18 @@ public class Cell extends Control {
 
 	public Cell() {
 		super();
-		setSkin(new CellSkin(this));
+		this.setSkin(new CellSkin(this));
 		polygon = new Polygon();
 		polygon.getPoints().addAll(makeVertices(this.radius, this.sides));
 		polygon.setStroke(Color.RED);
 		this.setShape(polygon);
-		
+		this.setPickOnBounds(false);
+		getChildren().add(polygon);
+
 		// add some listeners for clicks
+		setOnMouseClicked((MouseEvent event) -> {
+			polygon.setFill(Color.GREEN);
+		});
 	}
 
 	// Tutorial to make this method
@@ -38,7 +41,6 @@ public class Cell extends Control {
 			vertices[indexInVerticesArray++] = radius * Math.cos((2 * Math.PI * i) / sides);// x coordinate
 			vertices[indexInVerticesArray++] = radius * Math.sin((2 * Math.PI * i) / sides);// y coordinate
 		}
-		System.out.println("vertices:" + Arrays.toString(vertices));
 		return vertices;
 	}
 
@@ -46,14 +48,12 @@ public class Cell extends Control {
 		// update the size of the rectangle
 		super.resize(width, height);
 		this.polygon.resize(width, height);
-		System.out.println("calling Cell.resize()");
 	}
 
 	public void relocate(double x, double y) {
 		// update the size of the rectangle
 		super.relocate(x, y);
 		this.polygon.relocate(x, y);
-		System.out.println("calling Cell.relocate()");
 	}
 
 	private int sides = 6;
