@@ -13,7 +13,7 @@ public class Board {
 	public Board() {		
 		for (int i = 0; i < cells.length; i++) {
 			for (int j = 0; j < cells[i].length; j++) {
-				cells[i][j] = new Cell();
+				cells[i][j] = new Cell(CellType.EMPTY);
 			}
 		}
 		// initialize Cells

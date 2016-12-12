@@ -16,20 +16,22 @@ public class Cell extends Control {
 	// Tutorial to make this button
 	// http://stackoverflow.com/questions/26850828/how-to-make-a-javafx-button-with-circle-shape-of-3xp-diameter
 
-	public Cell() {
+	public Cell(CellType celltype) {
 		super();
 		this.setSkin(new CellSkin(this));
 		polygon = new Polygon();
-		polygon.getPoints().addAll(makeVertices(this.radius, this.sides));
-		polygon.setStroke(Color.RED);
-		this.setShape(polygon);
-		this.setPickOnBounds(false);
-		getChildren().add(polygon);
-
-		// add some listeners for clicks
-		setOnMouseClicked((MouseEvent event) -> {
-			polygon.setFill(Color.GREEN);
-		});
+		if (celltype == CellType.PLAYER1 || celltype == CellType.PLAYER2 || celltype == CellType.EMPTY){
+			polygon.getPoints().addAll(makeVertices(this.radius, this.sides));
+			polygon.setStroke(Color.RED);
+			this.setShape(polygon);
+			this.setPickOnBounds(false);
+			getChildren().add(polygon);
+			
+			// add some listeners for clicks
+			setOnMouseClicked((MouseEvent event) -> {
+				polygon.setFill(Color.GREEN);
+			});
+		}
 	}
 
 	// Tutorial to make this method
