@@ -1,6 +1,7 @@
 import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 
 /**
@@ -19,19 +20,42 @@ public class Cell extends Control {
 	public Cell(CellType celltype) {
 		super();
 		this.setSkin(new CellSkin(this));
+		
 		polygon = new Polygon();
-		if (celltype == CellType.PLAYER1 || celltype == CellType.PLAYER2 || celltype == CellType.EMPTY){
-			polygon.getPoints().addAll(makeVertices(this.radius, this.sides));
-			polygon.setStroke(Color.RED);
-			this.setShape(polygon);
-			this.setPickOnBounds(false);
-			getChildren().add(polygon);
-			
-			// add some listeners for clicks
-			setOnMouseClicked((MouseEvent event) -> {
-				polygon.setFill(Color.GREEN);
-			});
+		setCellType(celltype);
+
+		// add some listeners for clicks
+		setOnMouseClicked((MouseEvent event) -> {
+			polygon.setFill(Color.DARKCYAN);
+		});
+	}
+
+	public void setCellType(CellType celltype) {
+		if (celltype == CellType.PLAYER1 || celltype == CellType.PLAYER2 || celltype == CellType.EMPTY)
+			createHexagon();
+		if (celltype == CellType.PLAYER1 || celltype == CellType.PLAYER2)
+			setPiece(celltype);
+
+	}
+
+	private void createHexagon() {
+		polygon.getPoints().addAll(makeVertices(this.radius, this.sides));
+		polygon.setStroke(Color.BLACK);
+		polygon.setFill(Color.LIGHTBLUE);
+		this.setShape(polygon);
+		getChildren().add(polygon);
+	}
+
+	public void setPiece(CellType celltype) {
+		Circle stone = new Circle(20);
+
+		if (celltype == CellType.PLAYER1) {
+			stone.setFill(Color.RED);
 		}
+		if (celltype == CellType.PLAYER2) {
+			stone.setFill(Color.GREEN);
+		}
+		getChildren().add(stone);
 	}
 
 	// Tutorial to make this method
@@ -39,9 +63,9 @@ public class Cell extends Control {
 	public Double[] makeVertices(int radius, int sides) {
 		Double[] vertices = new Double[sides * 2];
 		int indexInVerticesArray = 0;
-		for (int i = 1; i <= sides; i++) {
-			vertices[indexInVerticesArray++] = radius * Math.cos((2 * Math.PI * i) / sides);// x coordinate
-			vertices[indexInVerticesArray++] = radius * Math.sin((2 * Math.PI * i) / sides);// y coordinate
+		for (int n = 1; n <= sides; n++) {
+			vertices[indexInVerticesArray++] = radius * Math.cos((2 * Math.PI * n + Math.PI) / sides);// x coordinate
+			vertices[indexInVerticesArray++] = radius * Math.sin((2 * Math.PI * n + Math.PI) / sides);// y coordinate
 		}
 		return vertices;
 	}
@@ -49,16 +73,18 @@ public class Cell extends Control {
 	public void resize(double width, double height) {
 		// update the size of the rectangle
 		super.resize(width, height);
-		this.polygon.resize(width, height);
+		// polygon.getPoints().removeAll(makeVertices(this.radius, this.sides));
+		// this.radius = (int) width;
+		// polygon.getPoints().addAll(makeVertices(this.radius, this.sides));
+		//// this.polygon.resize(width, height);
 	}
 
 	public void relocate(double x, double y) {
-		// update the size of the rectangle
 		super.relocate(x, y);
 		this.polygon.relocate(x, y);
 	}
 
 	private int sides = 6;
-	private int radius = 20;
+	private int radius = 30;
 	Polygon polygon;
 }

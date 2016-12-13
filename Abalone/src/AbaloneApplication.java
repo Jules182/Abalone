@@ -4,7 +4,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class AbaloneApplication extends Application {
@@ -37,7 +36,8 @@ public class AbaloneApplication extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Abalone Game Team Markus&Julian");
-		primaryStage.setScene(new Scene(mainlayout, 600, 600, Color.BLACK));
+		primaryStage.setScene(new Scene(mainlayout, 600, 620));
+//		primaryStage.setResizable(false);
 		primaryStage.show();
 	}
 

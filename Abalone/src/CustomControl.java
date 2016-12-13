@@ -1,9 +1,9 @@
 
+import javafx.application.Platform;
 import javafx.scene.control.Control;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.application.Platform;
 
 //class definition for a custom control
 class CustomControl extends Control {
@@ -21,7 +21,9 @@ class CustomControl extends Control {
 
 		setOnKeyPressed((KeyEvent event) -> {
 			if (event.getCode() == KeyCode.SPACE) {
-				//board.resetGame();
+				getChildren().remove(board);
+				board = new AbaloneBoard();
+				getChildren().add(board);
 			}
 			if (event.getCode() == KeyCode.ESCAPE)
 				Platform.exit();
