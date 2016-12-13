@@ -97,20 +97,20 @@ public class AbaloneBoard extends Pane {
 	
 
 	private void createPlayer1() {
-		setPlayerInLine(1, new int[] { 1, 2, 3, 4, 5 }, CellType.PLAYER1);
-		setPlayerInLine(2, new int[] { 1, 2, 3, 4, 5, 6 }, CellType.PLAYER1);
-		setPlayerInLine(3, new int[] { 3, 4, 5 }, CellType.PLAYER1);
+		setPlayerInLine(1, new int[] { 1, 2, 3, 4, 5 }, PlayerType.PLAYER1);
+		setPlayerInLine(2, new int[] { 1, 2, 3, 4, 5, 6 }, PlayerType.PLAYER1);
+		setPlayerInLine(3, new int[] { 3, 4, 5 }, PlayerType.PLAYER1);
 	}
 
 	private void createPlayer2() {
-		setPlayerInLine(7, new int[] { 5, 6, 7 }, CellType.PLAYER2);
-		setPlayerInLine(8, new int[] { 4, 5, 6, 7, 8, 9 }, CellType.PLAYER2);
-		setPlayerInLine(9, new int[] { 5, 6, 7, 8, 9 }, CellType.PLAYER2);
+		setPlayerInLine(7, new int[] { 5, 6, 7 }, PlayerType.PLAYER2);
+		setPlayerInLine(8, new int[] { 4, 5, 6, 7, 8, 9 }, PlayerType.PLAYER2);
+		setPlayerInLine(9, new int[] { 5, 6, 7, 8, 9 }, PlayerType.PLAYER2);
 	}
 
-	private void setPlayerInLine(int line, int[] place, CellType celltype) {
+	private void setPlayerInLine(int line, int[] place, PlayerType player) {
 		for (int i : place) {
-			cells[line][i].setPiece(celltype);
+			cells[line][i].setPiece(player);
 		}
 	}
 

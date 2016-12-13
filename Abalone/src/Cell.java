@@ -20,7 +20,7 @@ public class Cell extends Control {
 	public Cell(CellType celltype) {
 		super();
 		this.setSkin(new CellSkin(this));
-		
+
 		polygon = new Polygon();
 		setCellType(celltype);
 
@@ -33,9 +33,6 @@ public class Cell extends Control {
 	public void setCellType(CellType celltype) {
 		if (celltype == CellType.PLAYER1 || celltype == CellType.PLAYER2 || celltype == CellType.EMPTY)
 			createHexagon();
-		if (celltype == CellType.PLAYER1 || celltype == CellType.PLAYER2)
-			setPiece(celltype);
-
 	}
 
 	private void createHexagon() {
@@ -46,15 +43,9 @@ public class Cell extends Control {
 		getChildren().add(polygon);
 	}
 
-	public void setPiece(CellType celltype) {
+	public void setPiece(PlayerType player) {
 		Circle stone = new Circle(20);
-
-		if (celltype == CellType.PLAYER1) {
-			stone.setFill(Color.RED);
-		}
-		if (celltype == CellType.PLAYER2) {
-			stone.setFill(Color.GREEN);
-		}
+		stone.setFill(player.getColor());
 		getChildren().add(stone);
 	}
 
