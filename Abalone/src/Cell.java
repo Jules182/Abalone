@@ -31,7 +31,7 @@ public class Cell extends Control {
 	}
 
 	public void setCellType(CellType celltype) {
-		if (celltype == CellType.PLAYER1 || celltype == CellType.PLAYER2 || celltype == CellType.EMPTY)
+		if (celltype == CellType.EMPTY)
 			createHexagon();
 	}
 

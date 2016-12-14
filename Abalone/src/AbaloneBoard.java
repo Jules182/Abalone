@@ -5,6 +5,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -26,11 +27,12 @@ public class AbaloneBoard extends Pane {
 
 		createCells();
 
-		vbox = new VBox();
+		vbox = new VBox(-15);
+		vbox.setPadding(new Insets(50));
 		vbox.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		hboxes = new HBox[11];
 		for (int i = 0; i < hboxes.length; i++) {
-			HBox hbox = new HBox();
+			HBox hbox = new HBox(2);
 			hbox.setAlignment(Pos.CENTER);
 			hboxes[i] = hbox;
 		}
@@ -95,6 +97,11 @@ public class AbaloneBoard extends Pane {
 	}
 	
 	
+	private void setPlayerInLine(int line, int[] place, PlayerType player) {
+		for (int i : place) {
+			cells[line][i].setPiece(player);
+		}
+	}
 
 	private void createPlayer1() {
 		setPlayerInLine(1, new int[] { 1, 2, 3, 4, 5 }, PlayerType.PLAYER1);
@@ -108,11 +115,6 @@ public class AbaloneBoard extends Pane {
 		setPlayerInLine(9, new int[] { 5, 6, 7, 8, 9 }, PlayerType.PLAYER2);
 	}
 
-	private void setPlayerInLine(int line, int[] place, PlayerType player) {
-		for (int i : place) {
-			cells[line][i].setPiece(player);
-		}
-	}
 
 	@Override
 	public void resize(double width, double height) {
