@@ -5,7 +5,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -21,11 +20,18 @@ public class AbaloneBoard extends Pane {
 	private double cell_width, cell_height; // width and height of a cell
 	private VBox vbox;
 	private HBox[] hboxes;
-	private Cell[][] cells = new Cell[11][11];
+	private Cell[][] renders = new Cell[11][11];
+	private GameLogic game;
+	private CellType[][] board;
 
 	public AbaloneBoard() {
+		
+		board = new CellType[11][11];
 
 		createCells();
+		
+		game = new GameLogic();
+		game.setCurrentPlayer(PieceType.PLAYER1);
 
 		vbox = new VBox(-15);
 		vbox.setPadding(new Insets(50));
@@ -37,9 +43,9 @@ public class AbaloneBoard extends Pane {
 			hboxes[i] = hbox;
 		}
 
-		for (int i = 0; i < cells.length; i++) {
-			for (int j = 0; j < cells[i].length; j++) {
-				hboxes[i].getChildren().add(cells[i][j]);
+		for (int i = 0; i < renders.length; i++) {
+			for (int j = 0; j < renders[i].length; j++) {
+				hboxes[i].getChildren().add(renders[i][j]);
 			}
 		}
 
@@ -50,9 +56,10 @@ public class AbaloneBoard extends Pane {
 	}
 
 	private void createCells() {
-		for (int i = 0; i < cells.length; i++) {
-			for (int j = 0; j < cells[i].length; j++) {
-				cells[i][j] = new Cell(CellType.EMPTY);
+		for (int i = 0; i < renders.length; i++) {
+			for (int j = 0; j < renders[i].length; j++) {
+				board[i][j] = CellType.EMPTY;
+				renders[i][j] = new Cell(board[i][j], this.game);
 			}
 		}
 		createOutsides();
@@ -66,7 +73,8 @@ public class AbaloneBoard extends Pane {
 
 	private void createPieceTypeInLine(int line, int[] place, CellType celltype) {
 		for (int i : place) {
-			cells[line][i] = new Cell(celltype);
+			board[line][i] = celltype;
+			renders[line][i] = new Cell(board[line][i], this.game);
 		}
 	}
 	
@@ -97,22 +105,22 @@ public class AbaloneBoard extends Pane {
 	}
 	
 	
-	private void setPlayerInLine(int line, int[] place, PlayerType player) {
+	private void setPlayerInLine(int line, int[] place, PieceType player) {
 		for (int i : place) {
-			cells[line][i].setPiece(player);
+			renders[line][i].setPiece(player);
 		}
 	}
 
 	private void createPlayer1() {
-		setPlayerInLine(1, new int[] { 1, 2, 3, 4, 5 }, PlayerType.PLAYER1);
-		setPlayerInLine(2, new int[] { 1, 2, 3, 4, 5, 6 }, PlayerType.PLAYER1);
-		setPlayerInLine(3, new int[] { 3, 4, 5 }, PlayerType.PLAYER1);
+		setPlayerInLine(1, new int[] { 1, 2, 3, 4, 5 }, PieceType.PLAYER1);
+		setPlayerInLine(2, new int[] { 1, 2, 3, 4, 5, 6 }, PieceType.PLAYER1);
+		setPlayerInLine(3, new int[] { 3, 4, 5 }, PieceType.PLAYER1);
 	}
 
 	private void createPlayer2() {
-		setPlayerInLine(7, new int[] { 5, 6, 7 }, PlayerType.PLAYER2);
-		setPlayerInLine(8, new int[] { 4, 5, 6, 7, 8, 9 }, PlayerType.PLAYER2);
-		setPlayerInLine(9, new int[] { 5, 6, 7, 8, 9 }, PlayerType.PLAYER2);
+		setPlayerInLine(7, new int[] { 5, 6, 7 }, PieceType.PLAYER2);
+		setPlayerInLine(8, new int[] { 4, 5, 6, 7, 8, 9 }, PieceType.PLAYER2);
+		setPlayerInLine(9, new int[] { 5, 6, 7, 8, 9 }, PieceType.PLAYER2);
 	}
 
 

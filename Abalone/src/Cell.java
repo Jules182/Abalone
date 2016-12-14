@@ -1,7 +1,6 @@
 import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 
 /**
@@ -13,26 +12,33 @@ import javafx.scene.shape.Polygon;
  *
  */
 public class Cell extends Control {
+	
+	private GameLogic game;
+	private boolean isSelectable;
 
-	// Tutorial to make this button
 	// http://stackoverflow.com/questions/26850828/how-to-make-a-javafx-button-with-circle-shape-of-3xp-diameter
 
-	public Cell(CellType celltype) {
+	public Cell(CellType celltype, GameLogic game) {
 		super();
 		this.setSkin(new CellSkin(this));
+		this.game = game;
+		this.isSelectable = false;
 
 		polygon = new Polygon();
-		setCellType(celltype);
+		stone = new Piece(PieceType.PLAYER1);
+		if (celltype == CellType.EMPTY)
+			createHexagon();
 
 		// add some listeners for clicks
 		setOnMouseClicked((MouseEvent event) -> {
-			polygon.setFill(Color.DARKCYAN);
-		});
-	}
-
-	public void setCellType(CellType celltype) {
-		if (celltype == CellType.EMPTY)
-			createHexagon();
+			if (isSelectable)
+				if (getChildren().contains(stone))
+				stone.setSelectColor();
+				else 
+				//TODO: validity of selection
+				polygon.setFill(game.getCurrentPlayer().getSelectColor());
+		}
+	);
 	}
 
 	private void createHexagon() {
@@ -43,10 +49,10 @@ public class Cell extends Control {
 		getChildren().add(polygon);
 	}
 
-	public void setPiece(PlayerType player) {
-		Circle stone = new Circle(20);
-		stone.setFill(player.getColor());
+	public void setPiece(PieceType player) {
+		stone = new Piece(player);
 		getChildren().add(stone);
+		setSelectable(true);
 	}
 
 	// Tutorial to make this method
@@ -60,6 +66,11 @@ public class Cell extends Control {
 		}
 		return vertices;
 	}
+	
+	public boolean isSelectable() {
+		return this.isSelectable;
+	}
+	
 
 	public void resize(double width, double height) {
 		// update the size of the rectangle
@@ -78,4 +89,9 @@ public class Cell extends Control {
 	private int sides = 6;
 	private int radius = 30;
 	Polygon polygon;
+	private Piece stone;
+
+	public void setSelectable(boolean isSelectable) {
+		this.isSelectable = isSelectable;
+	}
 }
