@@ -14,15 +14,17 @@ import javafx.scene.shape.Polygon;
 public class Cell extends Control {
 	
 	private GameLogic game;
-	private boolean isSelectable;
+	private boolean piece;
 
 	// http://stackoverflow.com/questions/26850828/how-to-make-a-javafx-button-with-circle-shape-of-3xp-diameter
 
-	public Cell(CellType celltype, GameLogic game) {
+	public Cell(CellType celltype, GameLogic game) { //, int i, int j) {
+		
+		//TODO: i und j setzen
 		super();
 		this.setSkin(new CellSkin(this));
 		this.game = game;
-		this.isSelectable = false;
+		this.piece = false;
 
 		polygon = new Polygon();
 		stone = new Piece(PieceType.PLAYER1);
@@ -31,11 +33,10 @@ public class Cell extends Control {
 
 		// add some listeners for clicks
 		setOnMouseClicked((MouseEvent event) -> {
-			if (isSelectable)
-				if (getChildren().contains(stone))
+			if (game.isSelectable(this))
+				if (hasPiece(game.getCurrentPlayer()))
 				stone.setSelectColor();
 				else 
-				//TODO: validity of selection
 				polygon.setFill(game.getCurrentPlayer().getSelectColor());
 		}
 	);
@@ -52,7 +53,16 @@ public class Cell extends Control {
 	public void setPiece(PieceType player) {
 		stone = new Piece(player);
 		getChildren().add(stone);
-		setSelectable(true);
+		this.piece = true;
+	}
+	
+	public boolean hasPiece(PieceType currentPlayer) {
+		//TODO: in piece variable gleich den Player storen??
+		return piece && (currentPlayer == stone.getPlayer());
+	}
+	
+	public void setHasPiece(boolean hasPiece) {
+		this.piece = hasPiece;
 	}
 
 	// Tutorial to make this method
@@ -66,11 +76,6 @@ public class Cell extends Control {
 		}
 		return vertices;
 	}
-	
-	public boolean isSelectable() {
-		return this.isSelectable;
-	}
-	
 
 	public void resize(double width, double height) {
 		// update the size of the rectangle
@@ -91,7 +96,5 @@ public class Cell extends Control {
 	Polygon polygon;
 	private Piece stone;
 
-	public void setSelectable(boolean isSelectable) {
-		this.isSelectable = isSelectable;
-	}
+	
 }

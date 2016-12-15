@@ -36,8 +36,8 @@ public class AbaloneApplication extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Abalone Game Team Markus&Julian");
-		primaryStage.setScene(new Scene(mainlayout, 600, 620));
-//		primaryStage.setResizable(false);
+		primaryStage.setScene(new Scene(mainlayout, 600, 600));
+		primaryStage.setResizable(false);
 		primaryStage.show();
 	}
 

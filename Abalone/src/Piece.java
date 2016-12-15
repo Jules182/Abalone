@@ -21,4 +21,7 @@ class Piece extends Group {
 	// private fields of the class
 	private Circle stone; // ellipse for rendering the O piece
 	private PieceType player; // maintain a copy of the piece type we have
+	public PieceType getPlayer() {
+		return player;
+	}
 }

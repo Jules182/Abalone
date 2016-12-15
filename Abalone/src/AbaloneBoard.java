@@ -20,19 +20,16 @@ public class AbaloneBoard extends Pane {
 	private double cell_width, cell_height; // width and height of a cell
 	private VBox vbox;
 	private HBox[] hboxes;
-	private Cell[][] renders = new Cell[11][11];
+	private Cell[][] cells = new Cell[11][11];
 	private GameLogic game;
-	private CellType[][] board;
 
 	public AbaloneBoard() {
-		
-		board = new CellType[11][11];
-
+		game = new GameLogic(cells);
 		createCells();
-		
-		game = new GameLogic();
-		game.setCurrentPlayer(PieceType.PLAYER1);
 
+		game.setCurrentPlayer(PieceType.PLAYER1);
+		game.initializeSelectable();
+		
 		vbox = new VBox(-15);
 		vbox.setPadding(new Insets(50));
 		vbox.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -43,9 +40,9 @@ public class AbaloneBoard extends Pane {
 			hboxes[i] = hbox;
 		}
 
-		for (int i = 0; i < renders.length; i++) {
-			for (int j = 0; j < renders[i].length; j++) {
-				hboxes[i].getChildren().add(renders[i][j]);
+		for (int i = 0; i < cells.length; i++) {
+			for (int j = 0; j < cells[i].length; j++) {
+				hboxes[i].getChildren().add(cells[i][j]);
 			}
 		}
 
@@ -56,16 +53,15 @@ public class AbaloneBoard extends Pane {
 	}
 
 	private void createCells() {
-		for (int i = 0; i < renders.length; i++) {
-			for (int j = 0; j < renders[i].length; j++) {
-				board[i][j] = CellType.EMPTY;
-				renders[i][j] = new Cell(board[i][j], this.game);
+		for (int i = 0; i < cells.length; i++) {
+			for (int j = 0; j < cells[i].length; j++) {
+				cells[i][j] = new Cell(CellType.EMPTY, this.game);
 			}
 		}
 		createOutsides();
 		createGutters();
-		
-		//create Players
+
+		// create Players
 		createPlayer1();
 		createPlayer2();
 
@@ -73,11 +69,10 @@ public class AbaloneBoard extends Pane {
 
 	private void createPieceTypeInLine(int line, int[] place, CellType celltype) {
 		for (int i : place) {
-			board[line][i] = celltype;
-			renders[line][i] = new Cell(board[line][i], this.game);
+			cells[line][i] = new Cell(celltype, this.game);
 		}
 	}
-	
+
 	private void createGutters() {
 		createPieceTypeInLine(0, new int[] { 0, 1, 2, 3, 4, 5, 6 }, CellType.GUTTER);
 		createPieceTypeInLine(1, new int[] { 0, 6, 7 }, CellType.GUTTER);
@@ -103,11 +98,10 @@ public class AbaloneBoard extends Pane {
 		createPieceTypeInLine(9, new int[] { 0, 1, 2 }, CellType.OUTSIDE);
 		createPieceTypeInLine(10, new int[] { 0, 1, 2, 3 }, CellType.OUTSIDE);
 	}
-	
-	
+
 	private void setPlayerInLine(int line, int[] place, PieceType player) {
 		for (int i : place) {
-			renders[line][i].setPiece(player);
+			cells[line][i].setPiece(player);
 		}
 	}
 
@@ -123,10 +117,8 @@ public class AbaloneBoard extends Pane {
 		setPlayerInLine(9, new int[] { 5, 6, 7, 8, 9 }, PieceType.PLAYER2);
 	}
 
-
 	@Override
 	public void resize(double width, double height) {
-		// TODO Auto-generated method stub
 		super.resize(width, height);
 
 		// cell_height = width / 30;
