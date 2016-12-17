@@ -12,16 +12,21 @@ import javafx.scene.shape.Polygon;
  *
  */
 public class Cell extends Control {
-	
+
 	private GameLogic game;
 	private boolean piece;
+	private int sides = 6;
+	private int radius = 30;
+	private Polygon polygon;
+	private Piece stone;
 
 	// http://stackoverflow.com/questions/26850828/how-to-make-a-javafx-button-with-circle-shape-of-3xp-diameter
 
-	public Cell(CellType celltype, GameLogic game) { //, int i, int j) {
-		
-		//TODO: i und j setzen
+	public Cell(CellType celltype, GameLogic game) { // , int i, int j) {
+
+		// TODO: i und j setzen
 		super();
+
 		this.setSkin(new CellSkin(this));
 		this.game = game;
 		this.piece = false;
@@ -33,13 +38,33 @@ public class Cell extends Control {
 
 		// add some listeners for clicks
 		setOnMouseClicked((MouseEvent event) -> {
-			if (game.isSelectable(this))
-				if (hasPiece(game.getCurrentPlayer()))
-				stone.setSelectColor();
-				else 
-				polygon.setFill(game.getCurrentPlayer().getSelectColor());
-		}
-	);
+			if (game.isSelectable(this)) {
+				// if it holds a piece
+				if (hasPiece(game.getCurrentPlayer())) {
+					
+					// Color und Selected später in den if Abfragen machen!! 
+					// Piece darf nicht selected sein, wenn Nachbar-Prüfung fehlschlägt etc.
+					game.setSelected(this); 
+					stone.setSelectColor();
+					
+					// TODO check if first, second or third piece was selected in order to update selectablePieces properly
+					
+					// if 1st piece:
+					// TODO update selectable pieces: neighbors with piece
+						//TODO neighbor calculation (distance < 1.5)
+					// if 2nd piece:
+						// TODO update selectable pieces: next piece only in direction of 1-2
+					// if 3rd piece:
+						// TODO update selectable pieces: empty
+
+				} else {
+					// TODO if possible, move selected pieces one step into the direction of this piece
+					polygon.setFill(game.getCurrentPlayer().getSelectColor());
+				}
+			} else if (game.isSelected(this)) {
+				// TODO unselect this piece
+			}
+		});
 	}
 
 	private void createHexagon() {
@@ -55,19 +80,19 @@ public class Cell extends Control {
 		getChildren().add(stone);
 		this.piece = true;
 	}
-	
-	public boolean hasPiece(PieceType currentPlayer) {
-		//TODO: in piece variable gleich den Player storen??
-		return piece && (currentPlayer == stone.getPlayer());
+
+	public boolean hasPiece(PieceType player) {
+		// TODO: in piece variable gleich den Player storen??
+		return piece && (player == stone.getPlayer());
 	}
-	
+
 	public void setHasPiece(boolean hasPiece) {
 		this.piece = hasPiece;
 	}
 
 	// Tutorial to make this method
 	// http://stackoverflow.com/questions/7198144/how-to-draw-a-n-sided-regular-circle-in-cartesian-coordinates
-	public Double[] makeVertices(int radius, int sides) {
+	private Double[] makeVertices(int radius, int sides) {
 		Double[] vertices = new Double[sides * 2];
 		int indexInVerticesArray = 0;
 		for (int n = 1; n <= sides; n++) {
@@ -77,24 +102,4 @@ public class Cell extends Control {
 		return vertices;
 	}
 
-	public void resize(double width, double height) {
-		// update the size of the rectangle
-		super.resize(width, height);
-		// polygon.getPoints().removeAll(makeVertices(this.radius, this.sides));
-		// this.radius = (int) width;
-		// polygon.getPoints().addAll(makeVertices(this.radius, this.sides));
-		//// this.polygon.resize(width, height);
-	}
-
-	public void relocate(double x, double y) {
-		super.relocate(x, y);
-		this.polygon.relocate(x, y);
-	}
-
-	private int sides = 6;
-	private int radius = 30;
-	Polygon polygon;
-	private Piece stone;
-
-	
 }

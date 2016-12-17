@@ -4,6 +4,7 @@ public class GameLogic {
 
 	private PieceType currentPlayer;
 	private Cell[][] cells = new Cell[11][11];
+	private ArrayList<Cell> selectedCells = new  ArrayList<Cell>();
 	private ArrayList<Cell> selectableCells = new ArrayList<Cell>();
 		
 	
@@ -18,7 +19,24 @@ public class GameLogic {
 			}
 		}
 	}
+	
+	
+	public boolean isSelectable(Cell cell) {
+		return selectableCells.contains(cell);
+	}
+	
+	public void setSelectable(Cell cell) {
+		selectableCells.add(cell);
+	}
 
+	public boolean isSelected(Cell cell) {
+		return selectedCells.contains(cell);
+	}
+	
+	public void setSelected(Cell cell) {
+		selectedCells.add(cell);
+	}
+	
 	public void setCurrentPlayer(PieceType player) {
 		this.currentPlayer = player;
 	}
@@ -27,8 +45,6 @@ public class GameLogic {
 		return currentPlayer;
 	}
 
-	public boolean isSelectable(Cell cell) {
-		return selectableCells.contains(cell);
-	}
+
 
 }

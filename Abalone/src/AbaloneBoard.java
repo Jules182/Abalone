@@ -117,18 +117,4 @@ public class AbaloneBoard extends Pane {
 		setPlayerInLine(9, new int[] { 5, 6, 7, 8, 9 }, PieceType.PLAYER2);
 	}
 
-	@Override
-	public void resize(double width, double height) {
-		super.resize(width, height);
-
-		// cell_height = width / 30;
-		// cell_width = width / 30;
-		//
-		// for (int i = 0; i < cells.length; i++) {
-		// for (int j = 0; j < cells[i].length; j++) {
-		// cells[i][j].resize(cell_width, cell_height);
-		// }
-		// }
-	}
-
 }
