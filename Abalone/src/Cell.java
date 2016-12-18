@@ -42,6 +42,8 @@ public class Cell extends Control {
 				// if it holds a piece
 				if (hasPiece(game.getCurrentPlayer())) {
 					
+					if (!game.isSelected(this)){
+						
 					// Color und Selected später in den if Abfragen machen!! 
 					// Piece darf nicht selected sein, wenn Nachbar-Prüfung fehlschlägt etc.
 					game.setSelected(this); 
@@ -56,6 +58,11 @@ public class Cell extends Control {
 						// TODO update selectable pieces: next piece only in direction of 1-2
 					// if 3rd piece:
 						// TODO update selectable pieces: empty
+					}
+					else{
+						game.deSelect(this);
+						stone.setDeselectColor();						
+					}
 
 				} else {
 					// TODO if possible, move selected pieces one step into the direction of this piece
@@ -96,8 +103,10 @@ public class Cell extends Control {
 		Double[] vertices = new Double[sides * 2];
 		int indexInVerticesArray = 0;
 		for (int n = 1; n <= sides; n++) {
-			vertices[indexInVerticesArray++] = radius * Math.cos((2 * Math.PI * n + Math.PI) / sides);// x coordinate
-			vertices[indexInVerticesArray++] = radius * Math.sin((2 * Math.PI * n + Math.PI) / sides);// y coordinate
+			vertices[indexInVerticesArray++] = radius * Math.cos((2 * Math.PI * n + Math.PI) / sides);// x
+																										// coordinate
+			vertices[indexInVerticesArray++] = radius * Math.sin((2 * Math.PI * n + Math.PI) / sides);// y
+																										// coordinate
 		}
 		return vertices;
 	}

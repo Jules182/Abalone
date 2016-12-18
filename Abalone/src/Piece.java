@@ -17,6 +17,10 @@ class Piece extends Group {
 	public void setSelectColor() {
 		stone.setFill(player.getSelectColor());
 	}
+	
+	public void setDeselectColor() {
+		stone.setFill(player.getPieceColor());
+	}
 
 	// private fields of the class
 	private Circle stone; // ellipse for rendering the O piece
@@ -24,4 +28,5 @@ class Piece extends Group {
 	public PieceType getPlayer() {
 		return player;
 	}
+
 }

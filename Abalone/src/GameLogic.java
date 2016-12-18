@@ -37,6 +37,10 @@ public class GameLogic {
 		selectedCells.add(cell);
 	}
 	
+	public void deSelect(Cell cell){
+		selectedCells.remove(cell);
+	}
+	
 	public void setCurrentPlayer(PieceType player) {
 		this.currentPlayer = player;
 	}
