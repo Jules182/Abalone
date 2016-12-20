@@ -38,7 +38,7 @@ public class Cell extends Control {
 
 		// add some listeners for clicks
 		setOnMouseClicked((MouseEvent event) -> {
-			if (game.isSelectable(this)) {
+			if (game.isSelectable(this) && !game.isSelected(this)) {
 				// if it holds a piece
 				if (hasPiece(game.getCurrentPlayer())) {
 					
@@ -60,8 +60,6 @@ public class Cell extends Control {
 						// TODO update selectable pieces: empty
 					}
 					else{
-						game.deSelect(this);
-						stone.setDeselectColor();						
 					}
 
 				} else {
@@ -69,7 +67,9 @@ public class Cell extends Control {
 					polygon.setFill(game.getCurrentPlayer().getSelectColor());
 				}
 			} else if (game.isSelected(this)) {
-				// TODO unselect this piece
+				// unselect this piece
+				game.deSelect(this);
+				stone.setDeselectColor();						
 			}
 		});
 	}
