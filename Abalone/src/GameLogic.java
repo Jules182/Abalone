@@ -71,27 +71,21 @@ public class GameLogic {
 			System.out.println(selectableCell.getxLocation() + " - " + selectableCell.getyLocation());
 			int deltaX = selectableCell.getxLocation() - selectedCell.getxLocation();
 			int deltaY = selectableCell.getyLocation() - selectedCell.getyLocation();
-			// double distance = Math.sqrt((Math.abs(deltaX) + Math.abs(deltaY))
-			// * (Math.abs(deltaX) + Math.abs(deltaY)));
 			double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
 			System.out.println(distance);
 			System.out.println();
 			if (distance > 1.5) {
 				toDelete.add(selectableCell);
-
-				// selectableCells.remove(selectableCell);
 			}
-
 		}
-
 		selectableCells.removeAll(toDelete);
 	}
 
 	public void findThirdInLine(Cell cell) {
 
 		initializeSelectable();
-		
+
 		Cell firstCell = selectedCells.get(0);
 		Cell secondCell = selectedCells.get(1);
 
@@ -102,7 +96,7 @@ public class GameLogic {
 
 		int xOfThrirdPiece = secondCell.getxLocation() - deltaX;
 		int yOfThrirdPiece = secondCell.getyLocation() - deltaY;
-		
+
 		for (Cell selectableCell : selectableCells) {
 			if (selectableCell.getxLocation() == xOfThrirdPiece && selectableCell.getyLocation() == yOfThrirdPiece) {
 				lastPossibleCell = selectableCell;

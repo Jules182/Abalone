@@ -27,7 +27,6 @@ public class Cell extends Control {
 
 	public Cell(CellType celltype, GameLogic game, int xLocation, int yLocation) {
 
-		// TODO: i und j setzen
 		super();
 
 		this.setSkin(new CellSkin(this));
@@ -49,21 +48,14 @@ public class Cell extends Control {
 
 					if (!game.isSelected(this)) {
 
-						// Color und Selected später in den if Abfragen machen!!
-						// Piece darf nicht selected sein, wenn Nachbar-Prüfung
-						// fehlschlägt etc.
-
 						// selected in order to update selectablePieces properly
 						// if 1st piece:
 						if (game.getNumberOfSelectedCells() == 0) {
 							game.setSelected(this);
 							stone.setSelectColor();
 							game.findAllNeighbours(this);
-							// TODO update selectable pieces: neighbors with
-							// piece
-							// TODO neighbor calculation (distance < 1.5)
-
 						}
+
 						// if 2nd piece:
 						else if (game.getNumberOfSelectedCells() == 1) {
 							if (game.isSelectable(this)) {
@@ -71,10 +63,8 @@ public class Cell extends Control {
 								stone.setSelectColor();
 							}
 							game.findThirdInLine(this);
-							// TODO update selectable pieces: next piece only in
-							// direction of 1-2
-
 						}
+
 						// if 3rd piece:
 						else if (game.getNumberOfSelectedCells() == 2) {
 							if (game.isSelectable(this)) {
@@ -83,10 +73,7 @@ public class Cell extends Control {
 							}
 							game.emptySelectableCells();
 						}
-
-					} else {
 					}
-
 				} else {
 					// TODO if possible, move selected pieces one step into the
 					// direction of this piece
@@ -99,10 +86,6 @@ public class Cell extends Control {
 			}
 
 		});
-	}
-
-	private void findAllNeighbours() {
-
 	}
 
 	private void createHexagon() {
