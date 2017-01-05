@@ -20,6 +20,7 @@ public class Cell extends Control {
 	private Polygon polygon;
 	private Piece stone;
 	private int xLocation;
+
 	private int yLocation;
 
 	// http://stackoverflow.com/questions/26850828/how-to-make-a-javafx-button-with-circle-shape-of-3xp-diameter
@@ -51,29 +52,38 @@ public class Cell extends Control {
 						// Color und Selected später in den if Abfragen machen!!
 						// Piece darf nicht selected sein, wenn Nachbar-Prüfung
 						// fehlschlägt etc.
-						game.setSelected(this);
-						stone.setSelectColor();
 
 						// selected in order to update selectablePieces properly
 						// if 1st piece:
 						if (game.getNumberOfSelectedCells() == 0) {
-							game.emptySelectableCells();
-							// TODO update selectable pieces: neighbors with piece
+							game.setSelected(this);
+							stone.setSelectColor();
+							game.findAllNeighbours(this);
+							// TODO update selectable pieces: neighbors with
+							// piece
 							// TODO neighbor calculation (distance < 1.5)
-							
 
 						}
 						// if 2nd piece:
-						if (game.getNumberOfSelectedCells() == 1) {
-							game.emptySelectableCells();
+						else if (game.getNumberOfSelectedCells() == 1) {
+							if (game.isSelectable(this)) {
+								game.setSelected(this);
+								stone.setSelectColor();
+							}
+							game.findThirdInLine(this);
 							// TODO update selectable pieces: next piece only in
 							// direction of 1-2
 
 						}
 						// if 3rd piece:
-						if (game.getNumberOfSelectedCells() == 2) {
+						else if (game.getNumberOfSelectedCells() == 2) {
+							if (game.isSelectable(this)) {
+								game.setSelected(this);
+								stone.setSelectColor();
+							}
 							game.emptySelectableCells();
 						}
+
 					} else {
 					}
 
@@ -89,6 +99,10 @@ public class Cell extends Control {
 			}
 
 		});
+	}
+
+	private void findAllNeighbours() {
+
 	}
 
 	private void createHexagon() {
@@ -128,4 +142,19 @@ public class Cell extends Control {
 		return vertices;
 	}
 
+	public int getxLocation() {
+		return xLocation;
+	}
+
+	public void setxLocation(int xLocation) {
+		this.xLocation = xLocation;
+	}
+
+	public int getyLocation() {
+		return yLocation;
+	}
+
+	public void setyLocation(int yLocation) {
+		this.yLocation = yLocation;
+	}
 }
