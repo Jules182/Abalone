@@ -41,36 +41,49 @@ public class Cell extends Control {
 			if (game.isSelectable(this) && !game.isSelected(this)) {
 				// if it holds a piece
 				if (hasPiece(game.getCurrentPlayer())) {
-					
-					if (!game.isSelected(this)){
-						
-					// Color und Selected später in den if Abfragen machen!! 
-					// Piece darf nicht selected sein, wenn Nachbar-Prüfung fehlschlägt etc.
-					game.setSelected(this); 
-					stone.setSelectColor();
-					
-					// TODO check if first, second or third piece was selected in order to update selectablePieces properly
-					
-					// if 1st piece:
-					// TODO update selectable pieces: neighbors with piece
-						//TODO neighbor calculation (distance < 1.5)
-					// if 2nd piece:
-						// TODO update selectable pieces: next piece only in direction of 1-2
-					// if 3rd piece:
-						// TODO update selectable pieces: empty
-					}
-					else{
+
+					if (!game.isSelected(this)) {
+
+						// Color und Selected später in den if Abfragen machen!!
+						// Piece darf nicht selected sein, wenn Nachbar-Prüfung
+						// fehlschlägt etc.
+						game.setSelected(this);
+						stone.setSelectColor();
+
+						// selected in order to update selectablePieces properly
+						// if 1st piece:
+						if (game.getNumberOfSelectedCells() == 0) {
+							game.emptySelectableCells();
+							// TODO update selectable pieces: neighbors with piece
+							// TODO neighbor calculation (distance < 1.5)
+							
+
+						}
+						// if 2nd piece:
+						if (game.getNumberOfSelectedCells() == 1) {
+							game.emptySelectableCells();
+							// TODO update selectable pieces: next piece only in
+							// direction of 1-2
+
+						}
+						// if 3rd piece:
+						if (game.getNumberOfSelectedCells() == 2) {
+							game.emptySelectableCells();
+						}
+					} else {
 					}
 
 				} else {
-					// TODO if possible, move selected pieces one step into the direction of this piece
+					// TODO if possible, move selected pieces one step into the
+					// direction of this piece
 					polygon.setFill(game.getCurrentPlayer().getSelectColor());
 				}
 			} else if (game.isSelected(this)) {
 				// unselect this piece
 				game.deSelect(this);
-				stone.setDeselectColor();						
+				stone.setDeselectColor();
 			}
+
 		});
 	}
 
