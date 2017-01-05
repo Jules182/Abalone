@@ -1,4 +1,6 @@
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -10,11 +12,10 @@ public class AbaloneApplication extends Application {
 	private VBox mainlayout;
 	private CustomControl cc_custom;
 	// menu
-	private MenuBar menubar;
-	private MenuItem mi_quit;
-	private MenuItem mi_hello;
-	private Menu menuFile;
-	private Menu menuHelp;
+	public MenuBar menubar;
+	private MenuItem miReset;
+	private MenuItem miQuit;
+	private Menu menuGame;
 
 	@Override
 	public void init() {
@@ -23,14 +24,22 @@ public class AbaloneApplication extends Application {
 		cc_custom = new CustomControl();
 
 		menubar = new MenuBar();
-		menuFile = new Menu("File");
-		menuHelp = new Menu("Help");
-		menubar.getMenus().addAll(menuFile, menuHelp);
-		mi_hello = new MenuItem("Hello");
-		mi_quit = new MenuItem("Quit");
-		menuFile.getItems().addAll(mi_hello, mi_quit);
+		menuGame = new Menu("Game");
+		menubar.getMenus().addAll(menuGame);
+
+		miReset = new MenuItem("Reset");
+		miQuit = new MenuItem("Quit");
+
+		menuGame.getItems().addAll(miReset, miQuit);
 		mainlayout.getChildren().addAll(menubar, cc_custom);
-		
+
+		miReset.setOnAction((ActionEvent event) -> {
+			cc_custom.resetBoard();
+		});
+
+		miQuit.setOnAction((ActionEvent event) -> {
+			Platform.exit();
+		});
 	}
 
 	@Override

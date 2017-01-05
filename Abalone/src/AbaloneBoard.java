@@ -1,5 +1,8 @@
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -25,12 +28,16 @@ public class AbaloneBoard extends Pane {
 
 	public AbaloneBoard() {
 		game = new GameLogic(cells);
-		createCells();
-
 		game.setCurrentPlayer(PieceType.PLAYER1);
+		createCells();
 		game.initializeSelectable();
-		
+
+		Label label = new Label("displaying player");
+		StringProperty playerName = new SimpleStringProperty(game.getCurrentPlayer().toString());
+		label.textProperty().bind(playerName);
+
 		vbox = new VBox(-15);
+		vbox.getChildren().add(label);
 		vbox.setPadding(new Insets(50));
 		vbox.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		hboxes = new HBox[11];

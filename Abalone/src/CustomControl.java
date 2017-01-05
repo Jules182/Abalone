@@ -3,7 +3,6 @@ import javafx.application.Platform;
 import javafx.scene.control.Control;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 
 //class definition for a custom control
 class CustomControl extends Control {
@@ -12,23 +11,22 @@ class CustomControl extends Control {
 		// set a default skin and generate a game board
 		setSkin(new CustomControlSkin(this));
 		board = new AbaloneBoard();
-		getChildren().add(board);
-
-		// add a mouse clicked listener that will try to place a piece
-		setOnMouseClicked((MouseEvent event) -> {
-			//board.placePiece(event.getX(), event.getY());
-		});
+		getChildren().addAll(board);
 
 		setOnKeyPressed((KeyEvent event) -> {
 			if (event.getCode() == KeyCode.SPACE) {
-				getChildren().remove(board);
-				board = new AbaloneBoard();
-				getChildren().add(board);
+				resetBoard();
 			}
 			if (event.getCode() == KeyCode.ESCAPE)
 				Platform.exit();
 		});
 
+	}
+
+	public void resetBoard() {
+		getChildren().remove(board);
+		board = new AbaloneBoard();
+		getChildren().add(board);
 	}
 
 	// override the resize method

@@ -36,7 +36,7 @@ public class Cell extends Control {
 		this.yLocation = yLocation;
 
 		polygon = new Polygon();
-		stone = new Piece(PieceType.PLAYER1);
+		stone = new Piece(PieceType.DEFAULT);
 		if (celltype == CellType.EMPTY)
 			createHexagon();
 
@@ -83,7 +83,7 @@ public class Cell extends Control {
 				// unselect this piece
 				game.deSelect(this);
 				stone.setDeselectColor();
-				
+
 				if (game.getNumberOfSelectedCells() == 0)
 					game.initializeSelectable();
 				else if (game.getNumberOfSelectedCells() == 1)
