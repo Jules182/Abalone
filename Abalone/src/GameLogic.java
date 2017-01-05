@@ -90,40 +90,28 @@ public class GameLogic {
 
 	public void findThirdInLine(Cell cell) {
 
+		initializeSelectable();
+		
 		Cell firstCell = selectedCells.get(0);
 		Cell secondCell = selectedCells.get(1);
 
 		int deltaX = firstCell.getxLocation() - secondCell.getxLocation();
 		int deltaY = firstCell.getyLocation() - secondCell.getyLocation();
 
-		// up right
-		if (deltaX == 0 && deltaY == -1) {
+		Cell lastPossibleCell = null;
 
-		}
-		// right
-		if (deltaX == 0 && deltaY == -1) {
-
-		}
-
-		// down right
-		if (deltaX == 0 && deltaY == -1) {
-
+		int xOfThrirdPiece = secondCell.getxLocation() - deltaX;
+		int yOfThrirdPiece = secondCell.getyLocation() - deltaY;
+		
+		for (Cell selectableCell : selectableCells) {
+			if (selectableCell.getxLocation() == xOfThrirdPiece && selectableCell.getyLocation() == yOfThrirdPiece) {
+				lastPossibleCell = selectableCell;
+			}
 		}
 
-		// down left
-		if (deltaX == 0 && deltaY == -1) {
-
-		}
-
-		// left
-		if (deltaX == 0 && deltaY == -1) {
-
-		}
-
-		// up left
-		if (deltaX == 0 && deltaY == -1) {
-
-		}
+		selectableCells = new ArrayList<Cell>();
+		if (lastPossibleCell != null)
+			selectableCells.add(lastPossibleCell);
 
 	}
 
