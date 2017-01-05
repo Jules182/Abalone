@@ -65,8 +65,13 @@ public class GameLogic {
 		return currentPlayer;
 	}
 
-	public void findAllNeighbours(Cell selectedCell) {
+	public void findAllNeighbours() {
+		
+		initializeSelectable();
+		
+		Cell selectedCell = selectedCells.get(0);
 		ArrayList<Cell> toDelete = new ArrayList<Cell>();
+		
 		for (Cell selectableCell : selectableCells) {
 			int deltaX = selectableCell.getxLocation() - selectedCell.getxLocation();
 			int deltaY = selectableCell.getyLocation() - selectedCell.getyLocation();
@@ -76,10 +81,11 @@ public class GameLogic {
 				toDelete.add(selectableCell);
 			}
 		}
+		
 		selectableCells.removeAll(toDelete);
 	}
 
-	public void findThirdInLine(Cell cell) {
+	public void findThirdInLine() {
 
 		initializeSelectable();
 

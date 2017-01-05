@@ -53,7 +53,7 @@ public class Cell extends Control {
 						if (game.getNumberOfSelectedCells() == 0) {
 							game.setSelected(this);
 							stone.setSelectColor();
-							game.findAllNeighbours(this);
+							game.findAllNeighbours();
 						}
 
 						// if 2nd piece:
@@ -62,7 +62,7 @@ public class Cell extends Control {
 								game.setSelected(this);
 								stone.setSelectColor();
 							}
-							game.findThirdInLine(this);
+							game.findThirdInLine();
 						}
 
 						// if 3rd piece:
@@ -83,6 +83,13 @@ public class Cell extends Control {
 				// unselect this piece
 				game.deSelect(this);
 				stone.setDeselectColor();
+				
+				if (game.getNumberOfSelectedCells() == 0)
+					game.initializeSelectable();
+				else if (game.getNumberOfSelectedCells() == 1)
+					game.findAllNeighbours();
+				else if (game.getNumberOfSelectedCells() == 2)
+					game.findThirdInLine();
 			}
 
 		});
