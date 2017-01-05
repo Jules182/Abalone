@@ -68,13 +68,10 @@ public class GameLogic {
 	public void findAllNeighbours(Cell selectedCell) {
 		ArrayList<Cell> toDelete = new ArrayList<Cell>();
 		for (Cell selectableCell : selectableCells) {
-			System.out.println(selectableCell.getxLocation() + " - " + selectableCell.getyLocation());
 			int deltaX = selectableCell.getxLocation() - selectedCell.getxLocation();
 			int deltaY = selectableCell.getyLocation() - selectedCell.getyLocation();
 			double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-			System.out.println(distance);
-			System.out.println();
 			if (distance > 1.5) {
 				toDelete.add(selectableCell);
 			}
