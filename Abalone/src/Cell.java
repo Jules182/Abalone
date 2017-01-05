@@ -19,10 +19,12 @@ public class Cell extends Control {
 	private int radius = 30;
 	private Polygon polygon;
 	private Piece stone;
+	private int xLocation;
+	private int yLocation;
 
 	// http://stackoverflow.com/questions/26850828/how-to-make-a-javafx-button-with-circle-shape-of-3xp-diameter
 
-	public Cell(CellType celltype, GameLogic game) { // , int i, int j) {
+	public Cell(CellType celltype, GameLogic game, int xLocation, int yLocation) {
 
 		// TODO: i und j setzen
 		super();
@@ -30,6 +32,8 @@ public class Cell extends Control {
 		this.setSkin(new CellSkin(this));
 		this.game = game;
 		this.piece = false;
+		this.xLocation = xLocation;
+		this.yLocation = yLocation;
 
 		polygon = new Polygon();
 		stone = new Piece(PieceType.PLAYER1);

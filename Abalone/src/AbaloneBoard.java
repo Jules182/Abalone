@@ -55,7 +55,7 @@ public class AbaloneBoard extends Pane {
 	private void createCells() {
 		for (int i = 0; i < cells.length; i++) {
 			for (int j = 0; j < cells[i].length; j++) {
-				cells[i][j] = new Cell(CellType.EMPTY, this.game);
+				cells[i][j] = new Cell(CellType.EMPTY, this.game, j, i);
 			}
 		}
 		createOutsides();
@@ -69,7 +69,7 @@ public class AbaloneBoard extends Pane {
 
 	private void createPieceTypeInLine(int line, int[] place, CellType celltype) {
 		for (int i : place) {
-			cells[line][i] = new Cell(celltype, this.game);
+			cells[line][i] = new Cell(celltype, this.game, i, line);
 		}
 	}
 
