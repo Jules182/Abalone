@@ -79,7 +79,7 @@ public class Cell extends Control {
 					// direction of this piece
 					polygon.setFill(game.getCurrentPlayer().getSelectColor());
 				}
-			} else if (game.isSelected(this)) {
+			} else if (game.isLastSelected(this)) {
 				// unselect this piece
 				game.deSelect(this);
 				stone.setDeselectColor();

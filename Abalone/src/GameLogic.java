@@ -112,4 +112,8 @@ public class GameLogic {
 
 	}
 
+	public boolean isLastSelected(Cell cell) {
+		return cell == selectedCells.get(selectedCells.size()-1);
+	}
+
 }
