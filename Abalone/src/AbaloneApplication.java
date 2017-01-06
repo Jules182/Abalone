@@ -27,8 +27,8 @@ public class AbaloneApplication extends Application {
 		menuGame = new Menu("Game");
 		menubar.getMenus().addAll(menuGame);
 
-		miReset = new MenuItem("Reset");
-		miQuit = new MenuItem("Quit");
+		miReset = new MenuItem("Reset [SPACE]");
+		miQuit = new MenuItem("Quit [ESC]");
 
 		menuGame.getItems().addAll(miReset, miQuit);
 		mainlayout.getChildren().addAll(menubar, cc_custom);
