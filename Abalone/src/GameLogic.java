@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import javax.print.attribute.standard.Destination;
+
 public class GameLogic {
 
 	private PieceType currentPlayer;
@@ -135,6 +137,11 @@ public class GameLogic {
 //			cell.setyLocation(cell.getyLocation()+deltaY);
 		} */
 		
+		for (Cell cell : selectedCells) {
+			Cell destination = cells[cell.getyLocation()+deltaY][cell.getxLocation()+deltaX];
+			swapPieces(cell, destination);
+		}
+		
 		System.out.println("After Move: " + cells[travelCell.getyLocation()][travelCell.getxLocation()].getStone().getPlayer());
 	}
 
@@ -142,6 +149,28 @@ public class GameLogic {
 		if (selectedCells.isEmpty())
 			return false;
 		return cell == selectedCells.get(selectedCells.size() - 1);
+	}
+	
+	private void swapPieces(Cell target, Cell destination){
+		
+		
+		
+		int xTarget = target.getxLocation();
+		int yTarget = target.getyLocation();
+		int xDestination = destination.getxLocation();
+		int yDestination = destination.getyLocation();
+		
+//		cells[yTarget][xTarget] = destination;
+		cells[yDestination][xDestination] = target;
+		
+		target.setxLocation(xDestination);
+		target.setyLocation(yDestination);
+//		destination.setxLocation(xTarget);
+//		destination.setyLocation(yTarget);		
+		
+		//TODO delete player from departure cell
+		//TODO movement along the selected cells
+		//TODO movement parallel to selected cells
 	}
 
 }
