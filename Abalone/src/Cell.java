@@ -42,6 +42,7 @@ public class Cell extends Control {
 
 		// add some listeners for clicks
 		setOnMouseClicked((MouseEvent event) -> {
+			System.out.println("Clicked x="+xLocation+" y="+yLocation);
 			if (game.isSelectable(this) && !game.isSelected(this)) {
 				// if it holds a piece
 				if (hasPiece(game.getCurrentPlayer())) {
@@ -74,11 +75,7 @@ public class Cell extends Control {
 							game.emptySelectableCells();
 						}
 					}
-				} else {
-					// TODO if possible, move selected pieces one step into the
-					// direction of this piece
-					polygon.setFill(game.getCurrentPlayer().getSelectColor());
-				}
+				} 
 			} else if (game.isLastSelected(this)) {
 				// unselect this piece
 				game.deSelect(this);
@@ -90,6 +87,11 @@ public class Cell extends Control {
 					game.findAllNeighbours();
 				else if (game.getNumberOfSelectedCells() == 2)
 					game.findThirdInLine();
+			}
+			//TODO move here
+			else {
+				game.move(this);
+				
 			}
 
 		});
@@ -146,5 +148,13 @@ public class Cell extends Control {
 
 	public void setyLocation(int yLocation) {
 		this.yLocation = yLocation;
+	}
+
+	public Piece getStone() {
+		return stone;
+	}
+
+	public void setStone(Piece stone) {
+		this.stone = stone;
 	}
 }

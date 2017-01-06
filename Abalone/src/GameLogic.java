@@ -112,6 +112,32 @@ public class GameLogic {
 
 	}
 
+	public void move(Cell travelCell){
+		System.out.println("Before Move: "+ cells[travelCell.getyLocation()][travelCell.getxLocation()].getStone().getPlayer());
+
+		Cell lastSelected = selectedCells.get(selectedCells.size()-1);
+		
+		int deltaX = travelCell.getxLocation() - lastSelected.getxLocation();
+		int deltaY = travelCell.getyLocation() - lastSelected.getyLocation();
+		
+		for (Cell cell : selectedCells) {
+			Cell cellToCheck = cells[cell.getyLocation()+deltaY][cell.getxLocation()+deltaX];
+			PieceType playerType = cellToCheck.getStone().getPlayer();
+			if (playerType == currentPlayer && !selectedCells.contains(cellToCheck)){
+				System.out.println("Do not move in your own pieces!");
+				return;
+			}
+		}
+		/*
+		for (Cell cell : selectedCells) {
+			cell =  null;
+//			cell.setxLocation(cell.getxLocation()+deltaX);
+//			cell.setyLocation(cell.getyLocation()+deltaY);
+		} */
+		
+		System.out.println("After Move: " + cells[travelCell.getyLocation()][travelCell.getxLocation()].getStone().getPlayer());
+	}
+
 	public boolean isLastSelected(Cell cell) {
 		if (selectedCells.isEmpty())
 			return false;
