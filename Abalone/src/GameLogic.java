@@ -129,6 +129,7 @@ public class GameLogic {
 	
 
 	public void checkDestinations() {
+		destinations = new ArrayList<Cell>();
 		Cell selectedCell = getLastSelected();
 		
 		for (Cell[] linesOfCells : cells) {

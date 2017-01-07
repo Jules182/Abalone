@@ -41,35 +41,37 @@ public class Cell extends Control {
 
 		// add some listeners for clicks
 		setOnMouseClicked((MouseEvent event) -> {
+			unmarkDestinations();
 			System.out.println("Clicked x=" + xLocation + " y=" + yLocation);
 			if (game.isSelectable(this) && !game.isSelected(this)) {
 				// if it holds a piece
 				if (hasPiece(game.getCurrentPlayer())) {
 
-						// selected in order to update selectablePieces properly
-						// if 1st piece:
-						if (game.getNumberOfSelectedCells() == 0) {
+					// selected in order to update selectablePieces properly
+					// if 1st piece:
+					if (game.getNumberOfSelectedCells() == 0) {
+						select();
+						game.findAllNeighbours();
+					}
+
+					// if 2nd piece:
+					else if (game.getNumberOfSelectedCells() == 1) {
+						if (game.isSelectable(this)) {
 							select();
-							game.findAllNeighbours();
 						}
+						game.findThirdInLine();
+					}
 
-						// if 2nd piece:
-						else if (game.getNumberOfSelectedCells() == 1) {
-							if (game.isSelectable(this)) {
-								select();
-							}
-							game.findThirdInLine();
+					// if 3rd piece:
+					else if (game.getNumberOfSelectedCells() == 2) {
+						if (game.isSelectable(this)) {
+							select();
 						}
+						game.emptySelectableCells();
+					}
 
-						// if 3rd piece:
-						else if (game.getNumberOfSelectedCells() == 2) {
-							if (game.isSelectable(this)) {
-								select();
-							}
-							game.emptySelectableCells();
-						}
-						
-						game.checkDestinations();
+					game.checkDestinations();
+					markDestinations();
 				}
 			} else if (game.isLastSelected(this)) {
 				// unselect this piece
@@ -83,13 +85,25 @@ public class Cell extends Control {
 					game.findThirdInLine();
 			}
 			// TODO move here
-			else if (game.isDestination(this)){
+			else if (game.isDestination(this)) {
 				game.move(this);
 				game.changePlayer();
-				
+
 			}
 
 		});
+	}
+
+	private void markDestinations() {
+		for (Cell destination : game.getDestinations()) {
+			destination.polygon.setFill(Color.LIGHTSTEELBLUE);
+		}
+	}
+
+	private void unmarkDestinations() {
+		for (Cell destination : game.getDestinations()) {
+			destination.polygon.setFill(Color.LIGHTBLUE);
+		}
 	}
 
 	public void deselect() {
