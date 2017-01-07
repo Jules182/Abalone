@@ -78,8 +78,8 @@ public class GameLogic {
 	// METHODS
 
 	/**
-	 * Initilizes the selectable cells.
-	 * All cells of the player will be slected.
+	 * Initializes the selectable cells.
+	 * All cells of the player will be selected.
 	 */
 	public void initializeSelectable() {
 		for (Cell[] line : cells) {
@@ -93,7 +93,7 @@ public class GameLogic {
 
 	/**
 	 * Detects all neighbours of a cell. 
-	 * These cells became the selectable cells.
+	 * These cells become the selectable cells.
 	 */
 	public void findAllNeighbours() {
 
@@ -116,7 +116,7 @@ public class GameLogic {
 	}
 
 	/**
-	 * Detects the third piece in a line with is the last selectable cell.
+	 * Detects the third piece in a line which is the last selectable cell.
 	 */
 	public void findThirdInLine() {
 
@@ -197,14 +197,18 @@ public class GameLogic {
 		int yToMove = toMove.getyLocation();
 		int xDestination = travelCell.getxLocation();
 		int yDestination = travelCell.getyLocation();
+		
+		
+		cells[yDestination][xDestination].setPiece(cells[yToMove][xToMove].getPiece());
 
-		cells[yToMove][xToMove] = travelCell;
-		cells[yDestination][xDestination] = toMove;
-
-		toMove.setxLocation(xDestination);
-		toMove.setyLocation(yDestination);
-		travelCell.setxLocation(xToMove);
-		travelCell.setyLocation(yToMove);
+		
+//		cells[yToMove][xToMove] = travelCell;
+//		cells[yDestination][xDestination] = toMove;
+//
+//		toMove.setxLocation(xDestination);
+//		toMove.setyLocation(yDestination);
+//		travelCell.setxLocation(xToMove);
+//		travelCell.setyLocation(yToMove);
 
 	}
 
@@ -221,14 +225,16 @@ public class GameLogic {
 		int yToMove = toMove.getyLocation();
 		int xDestination = destination.getxLocation();
 		int yDestination = destination.getyLocation();
+		
+		cells[yDestination][xDestination].setPiece(cells[yToMove][xToMove].getPiece());
 
-		cells[yToMove][xToMove] = destination;
-		cells[yDestination][xDestination] = toMove;
-
-		toMove.setxLocation(xDestination);
-		toMove.setyLocation(yDestination);
-		destination.setxLocation(xToMove);
-		destination.setyLocation(yToMove);
+//		cells[yToMove][xToMove] = destination;
+//		cells[yDestination][xDestination] = toMove;
+//
+//		toMove.setxLocation(xDestination);
+//		toMove.setyLocation(yDestination);
+//		destination.setxLocation(xToMove);
+//		destination.setyLocation(yToMove);
 
 	}
 

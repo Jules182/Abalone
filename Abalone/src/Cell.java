@@ -31,7 +31,6 @@ public class Cell extends Control {
 
 		this.setSkin(new CellSkin(this));
 		this.game = game;
-		this.piece = false;
 		this.xLocation = xLocation;
 		this.yLocation = yLocation;
 
@@ -42,7 +41,7 @@ public class Cell extends Control {
 
 		// add some listeners for clicks
 		setOnMouseClicked((MouseEvent event) -> {
-			System.out.println("Clicked x="+xLocation+" y="+yLocation);
+			System.out.println("Clicked x=" + xLocation + " y=" + yLocation);
 			if (game.isSelectable(this) && !game.isSelected(this)) {
 				// if it holds a piece
 				if (hasPiece(game.getCurrentPlayer())) {
@@ -75,7 +74,7 @@ public class Cell extends Control {
 							game.emptySelectableCells();
 						}
 					}
-				} 
+				}
 			} else if (game.isLastSelected(this)) {
 				// unselect this piece
 				game.deSelect(this);
@@ -88,10 +87,10 @@ public class Cell extends Control {
 				else if (game.getNumberOfSelectedCells() == 2)
 					game.findThirdInLine();
 			}
-			//TODO move here
+			// TODO move here
 			else {
 				game.move(this);
-				
+
 			}
 
 		});
@@ -105,19 +104,20 @@ public class Cell extends Control {
 		getChildren().add(polygon);
 	}
 
-	public void setPiece(PieceType player) {
-		stone = new Piece(player);
-		getChildren().add(stone);
-		this.piece = true;
+	public void setPiece(Piece piece) {
+		stone = piece;
+		if (piece.getPlayer() != PieceType.DEFAULT)
+			getChildren().add(stone);
+	}
+
+	public Piece getPiece() {
+		getChildren().remove(stone);
+		return stone;
 	}
 
 	public boolean hasPiece(PieceType player) {
 		// TODO: in piece variable gleich den Player storen??
-		return piece && (player == stone.getPlayer());
-	}
-
-	public void setHasPiece(boolean hasPiece) {
-		this.piece = hasPiece;
+		return (player == stone.getPlayer());
 	}
 
 	// Tutorial to make this method

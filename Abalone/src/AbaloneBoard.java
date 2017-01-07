@@ -20,7 +20,6 @@ import javafx.scene.paint.Color;
 
 public class AbaloneBoard extends Pane {
 
-	private double cell_width, cell_height; // width and height of a cell
 	private VBox vbox;
 	private HBox[] hboxes;
 	private Cell[][] cells = new Cell[11][11];
@@ -108,7 +107,7 @@ public class AbaloneBoard extends Pane {
 
 	private void setPlayerInLine(int line, int[] place, PieceType player) {
 		for (int i : place) {
-			cells[line][i].setPiece(player);
+			cells[line][i].setPiece(new Piece(player));
 		}
 	}
 
