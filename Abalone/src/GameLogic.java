@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 
-import javax.print.attribute.standard.Destination;
 
 public class GameLogic {
 
@@ -114,35 +113,64 @@ public class GameLogic {
 
 	}
 
-	public void move(Cell travelCell){
-		System.out.println("Before Move: "+ cells[travelCell.getyLocation()][travelCell.getxLocation()].getStone().getPlayer());
-
-		Cell lastSelected = selectedCells.get(selectedCells.size()-1);
+	public void move(Cell travelCell) {
 		
+		int X_JUSTFORSYSO = travelCell.getxLocation();
+		int Y_JUSTFORSYSO = travelCell.getyLocation();
+		
+		System.out.println(
+				"Before Move: " + cells[Y_JUSTFORSYSO][X_JUSTFORSYSO].getStone().getPlayer());
+
+		Cell lastSelected = selectedCells.get(selectedCells.size() - 1);
+
 		int deltaX = travelCell.getxLocation() - lastSelected.getxLocation();
 		int deltaY = travelCell.getyLocation() - lastSelected.getyLocation();
-		
+
 		for (Cell cell : selectedCells) {
-			Cell cellToCheck = cells[cell.getyLocation()+deltaY][cell.getxLocation()+deltaX];
+			Cell cellToCheck = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
 			PieceType playerType = cellToCheck.getStone().getPlayer();
-			if (playerType == currentPlayer && !selectedCells.contains(cellToCheck)){
+			if (playerType == currentPlayer && !selectedCells.contains(cellToCheck)) {
 				System.out.println("Do not move in your own pieces!");
 				return;
 			}
 		}
 		/*
-		for (Cell cell : selectedCells) {
-			cell =  null;
-//			cell.setxLocation(cell.getxLocation()+deltaX);
-//			cell.setyLocation(cell.getyLocation()+deltaY);
-		} */
+		 * for (Cell cell : selectedCells) { cell = null; //
+		 * cell.setxLocation(cell.getxLocation()+deltaX); //
+		 * cell.setyLocation(cell.getyLocation()+deltaY); }
+		 */
+
 		
-		for (Cell cell : selectedCells) {
-			Cell destination = cells[cell.getyLocation()+deltaY][cell.getxLocation()+deltaX];
-			swapPieces(cell, destination);
+		if (selectedCells.size()==1||inLane(travelCell)) {
+			swapPiecesInLane(travelCell);
+		} else {
+			for (Cell cell : selectedCells) {
+				Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
+				swapPiecesParallel(cell, destination);
+			}
 		}
+
+		System.out.println(
+				"After Move: " + cells[Y_JUSTFORSYSO][X_JUSTFORSYSO].getStone().getPlayer());
+	}
+
+	private void swapPiecesInLane(Cell travelCell) {
 		
-		System.out.println("After Move: " + cells[travelCell.getyLocation()][travelCell.getxLocation()].getStone().getPlayer());
+		Cell toMove = selectedCells.get(0);
+
+		int xToMove = toMove.getxLocation();
+		int yToMove = toMove.getyLocation();
+		int xDestination = travelCell.getxLocation();
+		int yDestination = travelCell.getyLocation();
+
+		cells[yToMove][xToMove] = travelCell;
+		cells[yDestination][xDestination] = toMove;
+
+		toMove.setxLocation(xDestination);
+		toMove.setyLocation(yDestination);
+		travelCell.setxLocation(xToMove);
+		travelCell.setyLocation(yToMove);
+
 	}
 
 	public boolean isLastSelected(Cell cell) {
@@ -151,26 +179,41 @@ public class GameLogic {
 		return cell == selectedCells.get(selectedCells.size() - 1);
 	}
 	
-	private void swapPieces(Cell target, Cell destination){
-		
-		
-		
-		int xTarget = target.getxLocation();
-		int yTarget = target.getyLocation();
+//	private Cell getLastSelected(){
+//		if (selectedCells.isEmpty())
+//			return null;
+//		return selectedCells.get(selectedCells.size() - 1);
+//	}
+
+	private void swapPiecesParallel(Cell toMove, Cell destination) {
+
+		int xToMove = toMove.getxLocation();
+		int yToMove = toMove.getyLocation();
 		int xDestination = destination.getxLocation();
 		int yDestination = destination.getyLocation();
-		
-//		cells[yTarget][xTarget] = destination;
-		cells[yDestination][xDestination] = target;
-		
-		target.setxLocation(xDestination);
-		target.setyLocation(yDestination);
-//		destination.setxLocation(xTarget);
-//		destination.setyLocation(yTarget);		
-		
-		//TODO delete player from departure cell
-		//TODO movement along the selected cells
-		//TODO movement parallel to selected cells
+
+		cells[yToMove][xToMove] = destination;
+		cells[yDestination][xDestination] = toMove;
+
+		toMove.setxLocation(xDestination);
+		toMove.setyLocation(yDestination);
+		destination.setxLocation(xToMove);
+		destination.setyLocation(yToMove);
+
+	}
+
+	private boolean inLane(Cell destination) {
+
+		Cell firstCell = selectedCells.get(0);
+		Cell secondCell = selectedCells.get(1);
+
+		int deltaXSelected = firstCell.getxLocation() - secondCell.getxLocation();
+		int deltaYSelected = firstCell.getyLocation() - secondCell.getyLocation();
+
+		int deltaX = secondCell.getxLocation() - destination.getxLocation();
+		int deltaY = secondCell.getyLocation() - destination.getyLocation();
+
+		return deltaX == deltaXSelected && deltaY == deltaYSelected;
 	}
 
 }
