@@ -63,8 +63,24 @@ public class GameLogic {
 		return currentPlayer;
 	}
 	
+	public boolean isLastSelected(Cell cell) {
+		if (selectedCells.isEmpty())
+			return false;
+		return cell == selectedCells.get(selectedCells.size() - 1);
+	}
+	
+//	private Cell getLastSelected(){
+//		if (selectedCells.isEmpty())
+//			return null;
+//		return selectedCells.get(selectedCells.size() - 1);
+//	}
+	
 	// METHODS
 
+	/**
+	 * Initilizes the selectable cells.
+	 * All cells of the player will be slected.
+	 */
 	public void initializeSelectable() {
 		for (Cell[] line : cells) {
 			for (Cell cell : line) {
@@ -75,6 +91,10 @@ public class GameLogic {
 	}
 
 
+	/**
+	 * Detects all neighbours of a cell. 
+	 * These cells became the selectable cells.
+	 */
 	public void findAllNeighbours() {
 
 		initializeSelectable();
@@ -95,6 +115,9 @@ public class GameLogic {
 		selectableCells.removeAll(toDelete);
 	}
 
+	/**
+	 * Detects the third piece in a line with is the last selectable cell.
+	 */
 	public void findThirdInLine() {
 
 		initializeSelectable();
@@ -122,6 +145,11 @@ public class GameLogic {
 
 	}
 
+	/**
+	 * Moves the selected cells to the clicked cell (named: travelcell)
+	 * 
+	 * @param travelCell Cell in which direction the cells will be moved
+	 */
 	public void move(Cell travelCell) {
 		
 		int X_JUSTFORSYSO = travelCell.getxLocation();
@@ -157,6 +185,10 @@ public class GameLogic {
 				"After Move: " + cells[Y_JUSTFORSYSO][X_JUSTFORSYSO].getStone().getPlayer());
 	}
 
+	/**
+	 * Moves the selected cells to the clicked cell by swapping the first and the travelcell
+	 * @param travelCell Cell in which direction the cells will be moved
+	 */
 	private void swapPiecesInLane(Cell travelCell) {
 		
 		Cell toMove = selectedCells.get(0);
@@ -176,18 +208,13 @@ public class GameLogic {
 
 	}
 
-	public boolean isLastSelected(Cell cell) {
-		if (selectedCells.isEmpty())
-			return false;
-		return cell == selectedCells.get(selectedCells.size() - 1);
-	}
-	
-//	private Cell getLastSelected(){
-//		if (selectedCells.isEmpty())
-//			return null;
-//		return selectedCells.get(selectedCells.size() - 1);
-//	}
 
+	/**
+	 * Moves each cells to the destination cell (parallel)
+	 * 
+	 * @param toMove Cell to Move
+	 * @param destination destionation Cell
+	 */
 	private void swapPiecesParallel(Cell toMove, Cell destination) {
 
 		int xToMove = toMove.getxLocation();
@@ -205,6 +232,12 @@ public class GameLogic {
 
 	}
 
+	/**
+	 * Checks if the clicked cell is in lane to decide the correct swap method
+	 * 
+	 * @param destination Cell in which direction the cells will be moved
+	 * @return is the cell in lane?
+	 */
 	private boolean inLane(Cell destination) {
 
 		Cell firstCell = selectedCells.get(0);
