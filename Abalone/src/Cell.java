@@ -46,8 +46,6 @@ public class Cell extends Control {
 				// if it holds a piece
 				if (hasPiece(game.getCurrentPlayer())) {
 
-					if (!game.isSelected(this)) {
-
 						// selected in order to update selectablePieces properly
 						// if 1st piece:
 						if (game.getNumberOfSelectedCells() == 0) {
@@ -73,7 +71,6 @@ public class Cell extends Control {
 							}
 							game.emptySelectableCells();
 						}
-					}
 				}
 			} else if (game.isLastSelected(this)) {
 				// unselect this piece
@@ -90,7 +87,7 @@ public class Cell extends Control {
 			// TODO move here
 			else {
 				game.move(this);
-
+				
 			}
 
 		});
@@ -111,8 +108,10 @@ public class Cell extends Control {
 	}
 
 	public Piece getPiece() {
+		Piece piece = stone;
 		getChildren().remove(stone);
-		return stone;
+		stone = new Piece(PieceType.DEFAULT);
+		return piece;
 	}
 
 	public boolean hasPiece(PieceType player) {
