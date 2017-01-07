@@ -68,6 +68,8 @@ public class Cell extends Control {
 							}
 							game.emptySelectableCells();
 						}
+						
+						game.checkDestinations();
 				}
 			} else if (game.isLastSelected(this)) {
 				// unselect this piece
@@ -81,7 +83,7 @@ public class Cell extends Control {
 					game.findThirdInLine();
 			}
 			// TODO move here
-			else {
+			else if (game.isDestination(this)){
 				game.move(this);
 				game.changePlayer();
 				
