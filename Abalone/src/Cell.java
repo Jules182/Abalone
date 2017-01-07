@@ -49,16 +49,14 @@ public class Cell extends Control {
 						// selected in order to update selectablePieces properly
 						// if 1st piece:
 						if (game.getNumberOfSelectedCells() == 0) {
-							game.setSelected(this);
-							stone.setSelectColor();
+							select();
 							game.findAllNeighbours();
 						}
 
 						// if 2nd piece:
 						else if (game.getNumberOfSelectedCells() == 1) {
 							if (game.isSelectable(this)) {
-								game.setSelected(this);
-								stone.setSelectColor();
+								select();
 							}
 							game.findThirdInLine();
 						}
@@ -66,16 +64,14 @@ public class Cell extends Control {
 						// if 3rd piece:
 						else if (game.getNumberOfSelectedCells() == 2) {
 							if (game.isSelectable(this)) {
-								game.setSelected(this);
-								stone.setSelectColor();
+								select();
 							}
 							game.emptySelectableCells();
 						}
 				}
 			} else if (game.isLastSelected(this)) {
 				// unselect this piece
-				game.deSelect(this);
-				stone.setDeselectColor();
+				deselect();
 
 				if (game.getNumberOfSelectedCells() == 0)
 					game.initializeSelectable();
@@ -91,6 +87,16 @@ public class Cell extends Control {
 			}
 
 		});
+	}
+
+	public void deselect() {
+		game.deselect(this);
+		stone.setDeselectColor();
+	}
+
+	private void select() {
+		game.setSelected(this);
+		stone.setSelectColor();
 	}
 
 	private void createHexagon() {
