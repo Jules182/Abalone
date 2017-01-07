@@ -83,6 +83,7 @@ public class Cell extends Control {
 			// TODO move here
 			else {
 				game.move(this);
+				game.changePlayer();
 				
 			}
 

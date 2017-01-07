@@ -9,6 +9,8 @@ public class GameLogic {
 	private ArrayList<Cell> selectedCells = new ArrayList<Cell>();
 
 	private ArrayList<Cell> selectableCells = new ArrayList<Cell>();
+	
+	private int round = 0;
 
 	// CONSTRCTOR
 
@@ -262,5 +264,25 @@ public class GameLogic {
 
 		return deltaX == deltaXSelected && deltaY == deltaYSelected;
 	}
+	
+	
+	
+	public void changePlayer(){
+		round++;
+		
+		if (round % numberOfPlayer == 0)
+			setupForPlayer(PieceType.PLAYER1);
+		else
+			setupForPlayer(PieceType.PLAYER2);
+		
+	}
+	
+	private void setupForPlayer(PieceType player) {
+		currentPlayer = player;
+		initializeSelectable();
+		
+	}
+
+	final int numberOfPlayer = 2;
 
 }
