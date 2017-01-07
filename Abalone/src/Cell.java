@@ -46,28 +46,28 @@ public class Cell extends Control {
 				// if it holds a piece
 				if (hasPiece(game.getCurrentPlayer())) {
 
-						// selected in order to update selectablePieces properly
-						// if 1st piece:
-						if (game.getNumberOfSelectedCells() == 0) {
+					// selected in order to update selectablePieces properly
+					// if 1st piece:
+					if (game.getNumberOfSelectedCells() == 0) {
+						select();
+						game.findAllNeighbours();
+					}
+
+					// if 2nd piece:
+					else if (game.getNumberOfSelectedCells() == 1) {
+						if (game.isSelectable(this)) {
 							select();
-							game.findAllNeighbours();
 						}
+						game.findThirdInLine();
+					}
 
-						// if 2nd piece:
-						else if (game.getNumberOfSelectedCells() == 1) {
-							if (game.isSelectable(this)) {
-								select();
-							}
-							game.findThirdInLine();
+					// if 3rd piece:
+					else if (game.getNumberOfSelectedCells() == 2) {
+						if (game.isSelectable(this)) {
+							select();
 						}
-
-						// if 3rd piece:
-						else if (game.getNumberOfSelectedCells() == 2) {
-							if (game.isSelectable(this)) {
-								select();
-							}
-							game.emptySelectableCells();
-						}
+						game.emptySelectableCells();
+					}
 				}
 			} else if (game.isLastSelected(this)) {
 				// unselect this piece
@@ -81,10 +81,9 @@ public class Cell extends Control {
 					game.findThirdInLine();
 			}
 			// TODO move here
-			else {
+			else if (game.getNumberOfSelectedCells() != 0 && getStone().getPlayer() == PieceType.DEFAULT) {
 				game.move(this);
 				game.changePlayer();
-				
 			}
 
 		});
