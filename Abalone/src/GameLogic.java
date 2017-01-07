@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class GameLogic {
 
 	// FIELDS
@@ -62,10 +65,29 @@ public class GameLogic {
 
 	public void setCurrentPlayer(PieceType player) {
 		this.currentPlayer = player;
+		this.setPlayerName(player.name());
 	}
 
 	public PieceType getCurrentPlayer() {
 		return currentPlayer;
+	}
+
+	// Player Name property to show current player in label
+	private StringProperty playerName = new SimpleStringProperty();
+
+	// Define a getter for the property's value
+	public final String getPlayerName() {
+		return playerName.get();
+	}
+
+	// Define a setter for the property's value
+	public final void setPlayerName(String value) {
+		playerName.set(value);
+	}
+
+	// Define a getter for the property itself
+	public StringProperty playerNameProperty() {
+		return playerName;
 	}
 
 	public boolean isLastSelected(Cell cell) {
@@ -327,27 +349,20 @@ public class GameLogic {
 
 		return deltaX == deltaXSelected && deltaY == deltaYSelected;
 	}
-	
-	
-	
-	public void changePlayer(){
+
+	public void changePlayer() {
 		round++;
-		
-		if (round % numberOfPlayer == 0)
-			setupForPlayer(PieceType.PLAYER1);
+
+		if (round % numberOfPlayers == 0)
+			setCurrentPlayer(PieceType.PLAYER1);
 		else
-			setupForPlayer(PieceType.PLAYER2);
-		
-	}
-	
-	private void setupForPlayer(PieceType player) {
-		currentPlayer = player;
+			setCurrentPlayer(PieceType.PLAYER2);
+
 		initializeSelectable();
-		System.out.println("Current Player: "+player);
 		
 	}
 
-	final int numberOfPlayer = 2;
+	final int numberOfPlayers = 2;
 
 
 }

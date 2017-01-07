@@ -1,5 +1,3 @@
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -32,9 +30,8 @@ public class AbaloneBoard extends Pane {
 		game.initializeSelectable();
 
 		Label label = new Label("displaying player");
-		StringProperty playerName = new SimpleStringProperty(game.getCurrentPlayer().toString());
-		label.textProperty().bind(playerName);
-
+		label.textProperty().bind(game.playerNameProperty());
+		
 		vbox = new VBox(-15);
 		vbox.getChildren().add(label);
 		vbox.setPadding(new Insets(50));

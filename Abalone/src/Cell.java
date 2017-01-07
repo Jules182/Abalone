@@ -14,7 +14,6 @@ import javafx.scene.shape.Polygon;
 public class Cell extends Control {
 
 	private GameLogic game;
-	private boolean piece;
 	private int sides = 6;
 	private int radius = 30;
 	private Polygon polygon;
