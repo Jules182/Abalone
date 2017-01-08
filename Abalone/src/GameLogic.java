@@ -2,6 +2,8 @@ import java.util.ArrayList;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class GameLogic {
 
@@ -238,7 +240,7 @@ public class GameLogic {
 					Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
 					swapPiecesParallel(cell, destination);
 				}
-			} else 
+			} else
 				return;
 		}
 
@@ -405,5 +407,36 @@ public class GameLogic {
 	}
 
 	final int numberOfPlayers = 2;
+
+	public void checkForWinner() {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setHeaderText(null);
+		alert.setTitle("Winner detected!");
+
+		if (getScore(PieceType.PLAYER1) == 0) {
+			alert.setContentText("Player 2 won!");
+			alert.showAndWait();
+
+		}
+
+		if (getScore(PieceType.PLAYER2) == 0) {
+			alert.setContentText("Player 1 won!");
+			alert.showAndWait();
+		}
+
+		System.out.println("P1: " + getScore(PieceType.PLAYER1) + " - P2: " + getScore(PieceType.PLAYER2));
+
+	}
+
+	private int getScore(PieceType player) {
+		int counter = 0;
+		for (Cell[] linesOfCells : cells) {
+			for (Cell cell : linesOfCells) {
+				if (cell.getPiece().getPlayer() == player)
+					counter++;
+			}
+		}
+		return counter;
+	}
 
 }

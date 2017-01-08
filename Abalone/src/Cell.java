@@ -89,6 +89,7 @@ public class Cell extends Control {
 			else if (game.isDestination(this) && game.getNumberOfSelectedCells() != 0
 					&& getPiece().getPlayer() != game.getCurrentPlayer()) {
 				game.move(this);
+				game.checkForWinner();
 
 			}
 
