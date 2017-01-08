@@ -82,6 +82,9 @@ public class Cell extends Control {
 					game.findAllNeighbours();
 				else if (game.getNumberOfSelectedCells() == 2)
 					game.findThirdInLine();
+				
+				game.checkDestinations();
+				markDestinations();
 			}
 			// move here
 			else if (game.isDestination(this) && game.getNumberOfSelectedCells() != 0 && getStone().getPlayer() == PieceType.DEFAULT) {
