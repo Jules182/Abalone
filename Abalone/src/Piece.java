@@ -6,9 +6,9 @@ class Piece extends Group {
 	// constructor for the class
 	public Piece(PieceType player) {
 		this.player = player;
-		stone = new Circle(20);
-		getChildren().addAll(stone);
-		stone.setFill(player.getPieceColor());
+		ball = new Circle(20);
+		getChildren().addAll(ball);
+		ball.setFill(player.getPieceColor());
 	}
 
 	public PieceType getPlayer() {
@@ -16,15 +16,15 @@ class Piece extends Group {
 	}
 	
 	public void setSelectColor() {
-		stone.setFill(player.getSelectColor());
+		ball.setFill(player.getSelectColor());
 	}
 	
-	public void setDeselectColor() {
-		stone.setFill(player.getPieceColor());
+	public void setPieceColor() {
+		ball.setFill(player.getPieceColor());
 	}
 
 	// private fields of the class
-	private Circle stone; // ellipse for rendering the piece
+	private Circle ball; // ellipse for rendering the piece
 	private PieceType player; // maintain a copy of the piece type we have
 	
 

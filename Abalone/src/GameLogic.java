@@ -12,11 +12,9 @@ public class GameLogic {
 	private ArrayList<Cell> selectedCells = new ArrayList<Cell>();
 
 	private ArrayList<Cell> selectableCells = new ArrayList<Cell>();
-	
+
 	private ArrayList<Cell> destinations = new ArrayList<Cell>();
-	
-	
-	
+
 	private int round = 0;
 
 	// CONSTRCTOR
@@ -55,12 +53,18 @@ public class GameLogic {
 		return selectedCells.contains(cell);
 	}
 
-	public void setSelected(Cell cell) {
+	public void select(Cell cell) {
+		cell.getPiece().setSelectColor();
 		selectedCells.add(cell);
 	}
 
 	public void deselect(Cell cell) {
+		cell.getPiece().setPieceColor();
 		selectedCells.remove(cell);
+	}
+
+	public PieceType getCurrentPlayer() {
+		return currentPlayer;
 	}
 
 	public void setCurrentPlayer(PieceType player) {
@@ -68,9 +72,6 @@ public class GameLogic {
 		this.setPlayerName(player.name());
 	}
 
-	public PieceType getCurrentPlayer() {
-		return currentPlayer;
-	}
 
 	// Player Name property to show current player in label
 	private StringProperty playerName = new SimpleStringProperty();
@@ -101,33 +102,31 @@ public class GameLogic {
 			return null;
 		return selectedCells.get(selectedCells.size() - 1);
 	}
-	
-	public ArrayList<Cell> getDestinations(){
+
+	public ArrayList<Cell> getDestinations() {
 		return destinations;
 	}
-	
+
 	public boolean isDestination(Cell cell) {
 		return destinations.contains(cell);
-	} 
+	}
 
 	// METHODS
 
 	/**
-	 * Initializes the selectable cells. All cells of the player will be
-	 * selected.
+	 * Initializes the selectable cells. All cells of the current player will be selectable
 	 */
 	public void initializeSelectable() {
 		for (Cell[] line : cells) {
 			for (Cell cell : line) {
-				if (cell.hasPiece(currentPlayer))
+				if (cell.hasPieceOf(currentPlayer))
 					selectableCells.add(cell);
 			}
 		}
 	}
 
 	/**
-	 * Detects all neighbours of a cell. These cells become the selectable
-	 * cells.
+	 * Detects all neighbours of a cell. These cells become the selectable cells.
 	 */
 	public void findAllNeighbours() {
 
@@ -140,36 +139,34 @@ public class GameLogic {
 			int deltaX = selectableCell.getxLocation() - selectedCell.getxLocation();
 			int deltaY = selectableCell.getyLocation() - selectedCell.getyLocation();
 			double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-			if (distance > 1.5) {
+			int sum = deltaX + deltaY;
+			
+			if (distance > 1.5 && sum != 0) {
 				toDelete.add(selectableCell);
 			}
 		}
 
 		selectableCells.removeAll(toDelete);
 	}
-	
 
 	public void checkDestinations() {
 		destinations = new ArrayList<Cell>();
 		Cell selectedCell = getLastSelected();
-		
+
 		for (Cell[] linesOfCells : cells) {
 			for (Cell cell : linesOfCells) {
 				int deltaX = cell.getxLocation() - selectedCell.getxLocation();
 				int deltaY = cell.getyLocation() - selectedCell.getyLocation();
 				double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+				int sum = deltaX + deltaY;
 
-				if (distance < 1.5 && distance!=0 && checkForCrash(selectedCell, cell)) {
-					System.out.println("Add x="+ cell.getxLocation() + " y=" + cell.getyLocation());;
+				if (distance < 1.5 && distance != 0 && sum != 0 && checkForCrash(selectedCell, cell)) {
+					System.out.println("Add x=" + cell.getxLocation() + " y=" + cell.getyLocation());
+					;
 					destinations.add(cell);
 				}
 			}
 		}
-		
-		
-		
-		
 	}
 
 	/**
@@ -213,33 +210,15 @@ public class GameLogic {
 		int X_JUSTFORSYSO = travelCell.getxLocation();
 		int Y_JUSTFORSYSO = travelCell.getyLocation();
 
-		System.out.println("Before Move: " + cells[Y_JUSTFORSYSO][X_JUSTFORSYSO].getStone().getPlayer());
+		System.out.println("Before Move: " + cells[Y_JUSTFORSYSO][X_JUSTFORSYSO].getPiece().getPlayer());
 
 		Cell lastSelected = getLastSelected();
 
 		int deltaX = travelCell.getxLocation() - lastSelected.getxLocation();
 		int deltaY = travelCell.getyLocation() - lastSelected.getyLocation();
 
-		
-		
-		
-		
-//		for (Cell cell : selectedCells) {
-//			Cell cellToCheck = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
-//			PieceType playerType = cellToCheck.getStone().getPlayer();
-//			if (playerType == currentPlayer && !selectedCells.contains(cellToCheck)) {
-//				System.out.println("Do not move in your own pieces!");
-//				return;
-//			}
-//		}
-		
-		
-		
-		
-		
-
 		for (Cell cell : selectedCells) {
-			cell.getStone().setDeselectColor();
+			cell.getPiece().setPieceColor();
 		}
 
 		if (selectedCells.size() == 1 || inLane(travelCell)) {
@@ -251,32 +230,29 @@ public class GameLogic {
 			}
 		}
 
-		System.out.println("After Move: " + cells[Y_JUSTFORSYSO][X_JUSTFORSYSO].getStone().getPlayer());
+		System.out.println("After Move: " + cells[Y_JUSTFORSYSO][X_JUSTFORSYSO].getPiece().getPlayer());
 		selectedCells = new ArrayList<Cell>();
 	}
-	
-	private boolean checkForCrash(Cell toMove, Cell destination){
-		
-		
+
+	private boolean checkForCrash(Cell toMove, Cell destination) {
 		int deltaX = destination.getxLocation() - toMove.getxLocation();
 		int deltaY = destination.getyLocation() - toMove.getyLocation();
-		
+
 		for (Cell cell : selectedCells) {
 			Cell cellToCheck = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
-//			System.out.println("Cell to check : x="+ cellToCheck.getxLocation() + " y=" + cellToCheck.getyLocation());
-			PieceType playerType = cellToCheck.getStone().getPlayer();
+			// System.out.println("Cell to check : x="+ cellToCheck.getxLocation() + " y=" + cellToCheck.getyLocation());
+			PieceType playerType = cellToCheck.getPiece().getPlayer();
 			if (playerType == currentPlayer && !selectedCells.contains(cellToCheck)) {
-//				System.out.println("failed");
+				// System.out.println("failed");
 				return false;
 			}
 		}
-//		System.out.println("passed");
+		// System.out.println("passed");
 		return true;
 	}
 
 	/**
-	 * Moves the selected cells to the clicked cell by swapping the first and
-	 * the travelcell
+	 * Moves the selected cells to the clicked cell by swapping the first and the travelcell
 	 * 
 	 * @param travelCell
 	 *            Cell in which direction the cells will be moved
@@ -290,16 +266,7 @@ public class GameLogic {
 		int xDestination = travelCell.getxLocation();
 		int yDestination = travelCell.getyLocation();
 
-		cells[yDestination][xDestination].setPiece(cells[yToMove][xToMove].getPiece());
-
-		// cells[yToMove][xToMove] = travelCell;
-		// cells[yDestination][xDestination] = toMove;
-		//
-		// toMove.setxLocation(xDestination);
-		// toMove.setyLocation(yDestination);
-		// travelCell.setxLocation(xToMove);
-		// travelCell.setyLocation(yToMove);
-
+		cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
 	}
 
 	/**
@@ -308,7 +275,7 @@ public class GameLogic {
 	 * @param toMove
 	 *            Cell to Move
 	 * @param destination
-	 *            destionation Cell
+	 *            destination Cell
 	 */
 	private void swapPiecesParallel(Cell toMove, Cell destination) {
 
@@ -317,16 +284,7 @@ public class GameLogic {
 		int xDestination = destination.getxLocation();
 		int yDestination = destination.getyLocation();
 
-		cells[yDestination][xDestination].setPiece(cells[yToMove][xToMove].getPiece());
-
-		// cells[yToMove][xToMove] = destination;
-		// cells[yDestination][xDestination] = toMove;
-		//
-		// toMove.setxLocation(xDestination);
-		// toMove.setyLocation(yDestination);
-		// destination.setxLocation(xToMove);
-		// destination.setyLocation(yToMove);
-
+		cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
 	}
 
 	/**
@@ -359,10 +317,9 @@ public class GameLogic {
 			setCurrentPlayer(PieceType.PLAYER2);
 
 		initializeSelectable();
-		
+
 	}
 
 	final int numberOfPlayers = 2;
-
 
 }

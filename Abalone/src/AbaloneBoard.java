@@ -104,7 +104,7 @@ public class AbaloneBoard extends Pane {
 
 	private void setPlayerInLine(int line, int[] place, PieceType player) {
 		for (int i : place) {
-			cells[line][i].setPiece(new Piece(player));
+			cells[line][i].addPiece(new Piece(player));
 		}
 	}
 

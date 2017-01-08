@@ -4,25 +4,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
 /**
- * Class which defines a hexagonal button
- * 
  * This is an element of the Hexagonal board which will have neighbours
- * 
- * @author alexcronin
- *
  */
+
 public class Cell extends Control {
 
 	private GameLogic game;
 	private int sides = 6;
 	private int radius = 30;
 	private Polygon polygon;
-	private Piece stone;
+	private Piece piece;
 	private int xLocation;
 
 	private int yLocation;
-
-	// http://stackoverflow.com/questions/26850828/how-to-make-a-javafx-button-with-circle-shape-of-3xp-diameter
 
 	public Cell(CellType celltype, GameLogic game, int xLocation, int yLocation) {
 
@@ -34,29 +28,29 @@ public class Cell extends Control {
 		this.yLocation = yLocation;
 
 		polygon = new Polygon();
-		stone = new Piece(PieceType.DEFAULT);
+		piece = new Piece(PieceType.DEFAULT);
 		if (celltype == CellType.EMPTY)
 			createHexagon();
 
-		// add some listeners for clicks
 		setOnMouseClicked((MouseEvent event) -> {
 			unmarkDestinations();
 			System.out.println("Clicked x=" + xLocation + " y=" + yLocation);
+			// if Cell is selectable and not already selected
 			if (game.isSelectable(this) && !game.isSelected(this)) {
-				// if it holds a piece
-				if (hasPiece(game.getCurrentPlayer())) {
+				// if it holds a piece of the current player
+				if (hasPieceOf(game.getCurrentPlayer())) {
 
-					// selected in order to update selectablePieces properly
+					// update selectablePieces properly depending on how many pieces are selected
 					// if 1st piece:
 					if (game.getNumberOfSelectedCells() == 0) {
-						select();
+						game.select(this);
 						game.findAllNeighbours();
 					}
 
 					// if 2nd piece:
 					else if (game.getNumberOfSelectedCells() == 1) {
 						if (game.isSelectable(this)) {
-							select();
+							game.select(this);
 						}
 						game.findThirdInLine();
 					}
@@ -64,7 +58,7 @@ public class Cell extends Control {
 					// if 3rd piece:
 					else if (game.getNumberOfSelectedCells() == 2) {
 						if (game.isSelectable(this)) {
-							select();
+							game.select(this);
 						}
 						game.emptySelectableCells();
 					}
@@ -73,8 +67,8 @@ public class Cell extends Control {
 					markDestinations();
 				}
 			} else if (game.isLastSelected(this)) {
-				// unselect this piece
-				deselect();
+				// deselect this piece
+				game.deselect(this);
 
 				if (game.getNumberOfSelectedCells() == 0)
 					game.initializeSelectable();
@@ -82,12 +76,16 @@ public class Cell extends Control {
 					game.findAllNeighbours();
 				else if (game.getNumberOfSelectedCells() == 2)
 					game.findThirdInLine();
-				
-				game.checkDestinations();
-				markDestinations();
+
+				if (game.getNumberOfSelectedCells() > 0) {
+					game.checkDestinations();
+					markDestinations();
+				}
+
 			}
 			// move here
-			else if (game.isDestination(this) && game.getNumberOfSelectedCells() != 0 && getStone().getPlayer() == PieceType.DEFAULT) {
+			else if (game.isDestination(this) && game.getNumberOfSelectedCells() != 0
+					&& getPiece().getPlayer() == PieceType.DEFAULT) {
 				game.move(this);
 				game.changePlayer();
 
@@ -108,14 +106,33 @@ public class Cell extends Control {
 		}
 	}
 
-	public void deselect() {
-		game.deselect(this);
-		stone.setDeselectColor();
+	public void addPiece(Piece piece) {
+		this.piece = piece;
+		if (piece.getPlayer() != PieceType.DEFAULT)
+			getChildren().add(this.piece);
 	}
 
-	private void select() {
-		game.setSelected(this);
-		stone.setSelectColor();
+	public Piece removePiece() {
+		Piece piece = this.piece;
+		getChildren().remove(this.piece);
+		this.piece = new Piece(PieceType.DEFAULT);
+		return piece;
+	}
+
+	public boolean hasPieceOf(PieceType player) {
+		return (player == piece.getPlayer());
+	}
+
+	// Tutorial to make this method:
+	// http://stackoverflow.com/questions/7198144/how-to-draw-a-n-sided-regular-circle-in-cartesian-coordinates
+	private Double[] makeVertices(int radius, int sides) {
+		Double[] vertices = new Double[sides * 2];
+		int indexInVerticesArray = 0;
+		for (int n = 1; n <= sides; n++) {
+			vertices[indexInVerticesArray++] = radius * Math.cos((2 * Math.PI * n + Math.PI) / sides); // x
+			vertices[indexInVerticesArray++] = radius * Math.sin((2 * Math.PI * n + Math.PI) / sides); // y
+		}
+		return vertices;
 	}
 
 	private void createHexagon() {
@@ -124,38 +141,6 @@ public class Cell extends Control {
 		polygon.setFill(Color.LIGHTBLUE);
 		this.setShape(polygon);
 		getChildren().add(polygon);
-	}
-
-	public void setPiece(Piece piece) {
-		stone = piece;
-		if (piece.getPlayer() != PieceType.DEFAULT)
-			getChildren().add(stone);
-	}
-
-	public Piece getPiece() {
-		Piece piece = stone;
-		getChildren().remove(stone);
-		stone = new Piece(PieceType.DEFAULT);
-		return piece;
-	}
-
-	public boolean hasPiece(PieceType player) {
-		// TODO: in piece variable gleich den Player storen??
-		return (player == stone.getPlayer());
-	}
-
-	// Tutorial to make this method
-	// http://stackoverflow.com/questions/7198144/how-to-draw-a-n-sided-regular-circle-in-cartesian-coordinates
-	private Double[] makeVertices(int radius, int sides) {
-		Double[] vertices = new Double[sides * 2];
-		int indexInVerticesArray = 0;
-		for (int n = 1; n <= sides; n++) {
-			vertices[indexInVerticesArray++] = radius * Math.cos((2 * Math.PI * n + Math.PI) / sides);// x
-																										// coordinate
-			vertices[indexInVerticesArray++] = radius * Math.sin((2 * Math.PI * n + Math.PI) / sides);// y
-																										// coordinate
-		}
-		return vertices;
 	}
 
 	public int getxLocation() {
@@ -174,11 +159,11 @@ public class Cell extends Control {
 		this.yLocation = yLocation;
 	}
 
-	public Piece getStone() {
-		return stone;
+	public Piece getPiece() {
+		return piece;
 	}
 
-	public void setStone(Piece stone) {
-		this.stone = stone;
+	public void setBall(Piece ball) {
+		this.piece = ball;
 	}
 }
