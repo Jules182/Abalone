@@ -72,7 +72,6 @@ public class GameLogic {
 		this.setPlayerName(player.name());
 	}
 
-
 	// Player Name property to show current player in label
 	private StringProperty playerName = new SimpleStringProperty();
 
@@ -114,7 +113,8 @@ public class GameLogic {
 	// METHODS
 
 	/**
-	 * Initializes the selectable cells. All cells of the current player will be selectable
+	 * Initializes the selectable cells. All cells of the current player will be
+	 * selectable
 	 */
 	public void initializeSelectable() {
 		for (Cell[] line : cells) {
@@ -126,7 +126,8 @@ public class GameLogic {
 	}
 
 	/**
-	 * Detects all neighbours of a cell. These cells become the selectable cells.
+	 * Detects all neighbours of a cell. These cells become the selectable
+	 * cells.
 	 */
 	public void findAllNeighbours() {
 
@@ -140,7 +141,7 @@ public class GameLogic {
 			int deltaY = selectableCell.getyLocation() - selectedCell.getyLocation();
 			double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 			int sum = deltaX + deltaY;
-			
+
 			if (distance > 1.5 && sum != 0) {
 				toDelete.add(selectableCell);
 			}
@@ -160,9 +161,10 @@ public class GameLogic {
 				double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 				int sum = deltaX + deltaY;
 
-				if (distance < 1.5 && distance != 0 && sum != 0 && checkForCrash(selectedCell, cell) && cell.getPiece().getPlayer() != currentPlayer) {
+				if (distance < 1.5 && distance != 0 && sum != 0 && checkForCrash(selectedCell, cell)
+						&& cell.getPiece().getPlayer() != currentPlayer) {
 					System.out.println("Add x=" + cell.getxLocation() + " y=" + cell.getyLocation());
-					
+
 					destinations.add(cell);
 				}
 			}
@@ -224,10 +226,20 @@ public class GameLogic {
 		if (selectedCells.size() == 1 || inLane(travelCell)) {
 			swapPiecesInLane(travelCell);
 		} else {
+			boolean letsdo = true;
 			for (Cell cell : selectedCells) {
 				Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
-				swapPiecesParallel(cell, destination);
+				if (!dirtyHarryCheckForParallelMovement(cell, destination))
+					letsdo = false;
 			}
+			if (letsdo) {
+
+				for (Cell cell : selectedCells) {
+					Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
+					swapPiecesParallel(cell, destination);
+				}
+			} else 
+				return;
 		}
 
 		System.out.println("After Move: " + cells[Y_JUSTFORSYSO][X_JUSTFORSYSO].getPiece().getPlayer());
@@ -241,7 +253,8 @@ public class GameLogic {
 
 		for (Cell cell : selectedCells) {
 			Cell cellToCheck = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
-			// System.out.println("Cell to check : x="+ cellToCheck.getxLocation() + " y=" + cellToCheck.getyLocation());
+			// System.out.println("Cell to check : x="+
+			// cellToCheck.getxLocation() + " y=" + cellToCheck.getyLocation());
 			PieceType playerType = cellToCheck.getPiece().getPlayer();
 			if (playerType == currentPlayer && !selectedCells.contains(cellToCheck)) {
 				// System.out.println("failed");
@@ -253,7 +266,8 @@ public class GameLogic {
 	}
 
 	/**
-	 * Moves the selected cells to the clicked cell by swapping the first and the travelcell
+	 * Moves the selected cells to the clicked cell by swapping the first and
+	 * the travelcell
 	 * 
 	 * @param travelCell
 	 *            Cell in which direction the cells will be moved
@@ -266,24 +280,24 @@ public class GameLogic {
 		int yToMove = toMove.getyLocation();
 		int xDestination = travelCell.getxLocation();
 		int yDestination = travelCell.getyLocation();
-		
+
 		int deltaX = xDestination - getLastSelected().getxLocation();
 		int deltaY = yDestination - getLastSelected().getyLocation();
-		
+
 		// is there a piece of the other player?
-		if (travelCell.getPiece().getPlayer() == getOtherPlayer()){
+		if (travelCell.getPiece().getPlayer() == getOtherPlayer()) {
 			// is there a piece behind? -> dont move
-			Cell cellBehind = cells[yDestination+deltaY][xDestination+deltaX];
-			if (cellBehind.getCellType() == CellType.EMPTY && cellBehind.getPiece().getPlayer()!=PieceType.DEFAULT ){
+			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
+			if (cellBehind.getCellType() == CellType.EMPTY && cellBehind.getPiece().getPlayer() != PieceType.DEFAULT) {
 				System.out.println("dont move, there is a piece behind!");
 				return;
 			}
 			// else: can I push it -> a) from the board b) on the board
-			else if (cellBehind.getCellType() == CellType.GUTTER){
+			else if (cellBehind.getCellType() == CellType.GUTTER) {
 				System.out.println("Piece kicked off field");
 				travelCell.removePiece();
-			}
-			else if (cellBehind.getCellType() == CellType.EMPTY && cellBehind.getPiece().getPlayer()==PieceType.DEFAULT){
+			} else if (cellBehind.getCellType() == CellType.EMPTY
+					&& cellBehind.getPiece().getPlayer() == PieceType.DEFAULT) {
 				System.out.println("unfriedly cell moved");
 				cellBehind.addPiece(cells[yDestination][xDestination].removePiece());
 			}
@@ -306,7 +320,51 @@ public class GameLogic {
 		int xDestination = destination.getxLocation();
 		int yDestination = destination.getyLocation();
 
+		int deltaX = xDestination - xToMove;
+		int deltaY = yDestination - yToMove;
+
+		// is there a piece of the other player?
+		if (destination.getPiece().getPlayer() == getOtherPlayer()) {
+			// is there a piece behind? -> dont move
+			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
+			if (cellBehind.getCellType() == CellType.EMPTY && cellBehind.getPiece().getPlayer() != PieceType.DEFAULT) {
+				System.out.println("dont move, there is a piece behind!");
+				return;
+			}
+			// else: can I push it -> a) from the board b) on the board
+			else if (cellBehind.getCellType() == CellType.GUTTER) {
+				System.out.println("Piece kicked off field");
+				destination.removePiece();
+			} else if (cellBehind.getCellType() == CellType.EMPTY
+					&& cellBehind.getPiece().getPlayer() == PieceType.DEFAULT) {
+				System.out.println("unfriedly cell moved");
+				cellBehind.addPiece(cells[yDestination][xDestination].removePiece());
+			}
+		}
 		cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
+
+	}
+
+	private boolean dirtyHarryCheckForParallelMovement(Cell toMove, Cell destination) {
+
+		// TODO HELP, PLEASE REFACTOR ME!!!1111
+		int xToMove = toMove.getxLocation();
+		int yToMove = toMove.getyLocation();
+		int xDestination = destination.getxLocation();
+		int yDestination = destination.getyLocation();
+
+		int deltaX = xDestination - xToMove;
+		int deltaY = yDestination - yToMove;
+
+		if (destination.getPiece().getPlayer() == getOtherPlayer()) {
+			// is there a piece behind? -> dont move
+			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
+			if (cellBehind.getCellType() == CellType.EMPTY && cellBehind.getPiece().getPlayer() != PieceType.DEFAULT) {
+				System.out.println("dont move, there is a piece behind!");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -335,12 +393,12 @@ public class GameLogic {
 		setCurrentPlayer(getOtherPlayer());
 
 		round++;
-		
+
 		initializeSelectable();
 
 	}
-	
-	public PieceType getOtherPlayer(){
+
+	public PieceType getOtherPlayer() {
 		if (round % numberOfPlayers == 0)
 			return PieceType.PLAYER2;
 		return PieceType.PLAYER1;
