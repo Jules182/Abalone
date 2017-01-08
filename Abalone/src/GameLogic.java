@@ -160,9 +160,9 @@ public class GameLogic {
 				double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 				int sum = deltaX + deltaY;
 
-				if (distance < 1.5 && distance != 0 && sum != 0 && checkForCrash(selectedCell, cell)) {
+				if (distance < 1.5 && distance != 0 && sum != 0 && checkForCrash(selectedCell, cell) && cell.getPiece().getPlayer() != currentPlayer) {
 					System.out.println("Add x=" + cell.getxLocation() + " y=" + cell.getyLocation());
-					;
+					
 					destinations.add(cell);
 				}
 			}
