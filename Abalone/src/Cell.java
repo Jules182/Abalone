@@ -15,6 +15,7 @@ public class Cell extends Control {
 	private Polygon polygon;
 	private Piece piece;
 	private int xLocation;
+	private CellType celltype;
 
 	private int yLocation;
 
@@ -26,6 +27,7 @@ public class Cell extends Control {
 		this.game = game;
 		this.xLocation = xLocation;
 		this.yLocation = yLocation;
+		this.celltype = celltype;
 
 		polygon = new Polygon();
 		piece = new Piece(PieceType.DEFAULT);
@@ -85,9 +87,8 @@ public class Cell extends Control {
 			}
 			// move here
 			else if (game.isDestination(this) && game.getNumberOfSelectedCells() != 0
-					&& getPiece().getPlayer() == PieceType.DEFAULT) {
+					&& getPiece().getPlayer() != game.getCurrentPlayer()) {
 				game.move(this);
-				game.changePlayer();
 
 			}
 
@@ -165,5 +166,9 @@ public class Cell extends Control {
 
 	public void setBall(Piece ball) {
 		this.piece = ball;
+	}
+	
+	public CellType getCellType() {
+		return celltype;
 	}
 }

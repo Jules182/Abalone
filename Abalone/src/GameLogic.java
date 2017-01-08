@@ -232,6 +232,7 @@ public class GameLogic {
 
 		System.out.println("After Move: " + cells[Y_JUSTFORSYSO][X_JUSTFORSYSO].getPiece().getPlayer());
 		selectedCells = new ArrayList<Cell>();
+		changePlayer();
 	}
 
 	private boolean checkForCrash(Cell toMove, Cell destination) {
@@ -265,7 +266,28 @@ public class GameLogic {
 		int yToMove = toMove.getyLocation();
 		int xDestination = travelCell.getxLocation();
 		int yDestination = travelCell.getyLocation();
-
+		
+		int deltaX = xDestination - getLastSelected().getxLocation();
+		int deltaY = yDestination - getLastSelected().getyLocation();
+		
+		// is there a piece of the other player?
+		if (travelCell.getPiece().getPlayer() == getOtherPlayer()){
+			// is there a piece behind? -> dont move
+			Cell cellBehind = cells[yDestination+deltaY][xDestination+deltaX];
+			if (cellBehind.getCellType() == CellType.EMPTY && cellBehind.getPiece().getPlayer()!=PieceType.DEFAULT ){
+				System.out.println("dont move, there is a piece behind!");
+				return;
+			}
+			// else: can I push it -> a) from the board b) on the board
+			else if (cellBehind.getCellType() == CellType.GUTTER){
+				System.out.println("Piece kicked off field");
+				travelCell.removePiece();
+			}
+			else if (cellBehind.getCellType() == CellType.EMPTY && cellBehind.getPiece().getPlayer()==PieceType.DEFAULT){
+				System.out.println("unfriedly cell moved");
+				cellBehind.addPiece(cells[yDestination][xDestination].removePiece());
+			}
+		}
 		cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
 	}
 
@@ -309,15 +331,19 @@ public class GameLogic {
 	}
 
 	public void changePlayer() {
+
+		setCurrentPlayer(getOtherPlayer());
+
 		round++;
-
-		if (round % numberOfPlayers == 0)
-			setCurrentPlayer(PieceType.PLAYER1);
-		else
-			setCurrentPlayer(PieceType.PLAYER2);
-
+		
 		initializeSelectable();
 
+	}
+	
+	public PieceType getOtherPlayer(){
+		if (round % numberOfPlayers == 0)
+			return PieceType.PLAYER2;
+		return PieceType.PLAYER1;
 	}
 
 	final int numberOfPlayers = 2;
