@@ -35,62 +35,33 @@ public class Cell extends Control {
 			createHexagon();
 
 		setOnMouseClicked((MouseEvent event) -> {
-			unmarkDestinations();
 			System.out.println("Clicked x=" + xLocation + " y=" + yLocation);
-			// if Cell is selectable and not already selected
-			if (game.isSelectable(this) && !game.isSelected(this)) {
-				// if it holds a piece of the current player
-				if (hasPieceOf(game.getCurrentPlayer())) {
+			// if Cell is selectable, not already selected and holds a piece of the current player
+			if (game.isSelectable(this) && (!game.isSelected(this)) && (hasPieceOf(game.getCurrentPlayer()))) {
+				//select
+				game.select(this);
 
-					// update selectablePieces properly depending on how many pieces are selected
-					// if 1st piece:
-					if (game.getNumberOfSelectedCells() == 0) {
-						game.select(this);
-						game.findAllNeighbours();
-					}
-
-					// if 2nd piece:
-					else if (game.getNumberOfSelectedCells() == 1) {
-						if (game.isSelectable(this)) {
-							game.select(this);
-						}
-						game.findThirdInLine();
-					}
-
-					// if 3rd piece:
-					else if (game.getNumberOfSelectedCells() == 2) {
-						if (game.isSelectable(this)) {
-							game.select(this);
-						}
-						game.emptySelectableCells();
-					}
-
-					game.checkDestinations();
-					markDestinations();
-				}
+				unmarkDestinations();
+				game.checkDestinations();
+				markDestinations();
+			// if Cell was recently selected
 			} else if (game.isLastSelected(this)) {
-				// deselect this piece
+				// deselect
 				game.deselect(this);
 
-				if (game.getNumberOfSelectedCells() == 0)
-					game.initializeSelectable();
-				else if (game.getNumberOfSelectedCells() == 1)
-					game.findAllNeighbours();
-				else if (game.getNumberOfSelectedCells() == 2)
-					game.findThirdInLine();
-
+				unmarkDestinations();
 				if (game.getNumberOfSelectedCells() > 0) {
 					game.checkDestinations();
 					markDestinations();
 				}
-
 			}
-			// move here
-			else if (game.isDestination(this) && game.getNumberOfSelectedCells() != 0
-					&& getPiece().getPlayer() != game.getCurrentPlayer()) {
+			else if (game.isDestination(this) && (game.getNumberOfSelectedCells() != 0)
+					&& (getPiece().getPlayer() != game.getCurrentPlayer())) {
+				// move here
 				game.move(this);
 				game.checkForWinner();
 
+				unmarkDestinations();
 			}
 
 		});
@@ -165,10 +136,10 @@ public class Cell extends Control {
 		return piece;
 	}
 
-	public void setBall(Piece ball) {
-		this.piece = ball;
+	public void setPiece(Piece piece) {
+		this.piece = piece;
 	}
-	
+
 	public CellType getCellType() {
 		return celltype;
 	}
