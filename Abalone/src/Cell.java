@@ -36,16 +36,18 @@ public class Cell extends Control {
 
 		setOnMouseClicked((MouseEvent event) -> {
 			System.out.println("Clicked x=" + xLocation + " y=" + yLocation);
-			// if Cell is selectable, not already selected and holds a piece of the current player
+			// if Cell is selectable, not already selected and holds a piece of
+			// the current player
 			if (game.isSelectable(this) && (!game.isSelected(this)) && (hasPieceOf(game.getCurrentPlayer()))) {
-				//select
+				// select
 				game.select(this);
 
 				unmarkDestinations();
 				game.checkDestinations();
 				markDestinations();
+			}
 			// if Cell was recently selected
-			} else if (game.isLastSelected(this)) {
+			else if (game.isLastSelected(this)) {
 				// deselect
 				game.deselect(this);
 
@@ -54,8 +56,7 @@ public class Cell extends Control {
 					game.checkDestinations();
 					markDestinations();
 				}
-			}
-			else if (game.isDestination(this) && (game.getNumberOfSelectedCells() != 0)
+			} else if (game.isDestination(this) && (game.getNumberOfSelectedCells() != 0)
 					&& (getPiece().getPlayer() != game.getCurrentPlayer())) {
 				// move here
 				game.move(this);
