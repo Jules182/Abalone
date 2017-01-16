@@ -58,11 +58,13 @@ public class GameLogic {
 	public void select(Cell cell) {
 		cell.getPiece().setSelectColor();
 		selectedCells.add(cell);
+		updateSelectablePieces();
 	}
 
 	public void deselect(Cell cell) {
 		cell.getPiece().setPieceColor();
 		selectedCells.remove(cell);
+		updateSelectablePieces();
 	}
 
 	public PieceType getCurrentPlayer() {
@@ -437,6 +439,28 @@ public class GameLogic {
 			}
 		}
 		return counter;
+	}
+	
+	public void updateSelectablePieces() {
+		// update selectablePieces properly depending on how many pieces are selected
+
+		switch (getNumberOfSelectedCells()) {
+		case 0:
+			initializeSelectable();
+			break;
+		case 1:
+			findAllNeighbours();
+			break;
+		case 2:
+			findThirdInLine();
+			break;
+		case 3:
+			emptySelectableCells();
+			break;
+		default:
+			initializeSelectable();
+			break;
+		}
 	}
 
 }
