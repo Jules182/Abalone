@@ -87,10 +87,10 @@ public class Cell extends Control {
 	}
 
 	public Piece removePiece() {
-		Piece piece = this.piece;
+		Piece oldPiece = this.piece;
 		getChildren().remove(this.piece);
 		this.piece = new Piece(PieceType.DEFAULT);
-		return piece;
+		return oldPiece;
 	}
 
 	public boolean hasPieceOf(PieceType player) {
