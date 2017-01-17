@@ -216,6 +216,8 @@ public class GameLogic {
 	 *            Cell in which direction the cells will be moved
 	 */
 	public void move(Cell destinationCell) {
+		
+		moved = false;
 
 		System.out.println("Before Move: " + cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
 
@@ -229,8 +231,8 @@ public class GameLogic {
 		}
 
 		if (selectedCells.size() == 1 || inLane(destinationCell)) {
+			// TODO change to swappiecesinparallel, change to "movement" instead of 2 methods
 			swapPiecesInLane(destinationCell);
-			movePerformed();
 		} else {
 			boolean letsdo = true;
 			for (Cell cell : selectedCells) {
@@ -242,13 +244,13 @@ public class GameLogic {
 				for (Cell cell : selectedCells) {
 					Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
 					swapPiecesParallel(cell, destination);
-					movePerformed();
 				}
 			} else
 				return;
 		}
 
 		System.out.println("After Move: " + cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
+		if (moved) movePerformed();
 	}
 
 	private void movePerformed() {
@@ -313,6 +315,7 @@ public class GameLogic {
 			}
 		}
 		cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
+		moved = true;
 	}
 
 	/**
@@ -351,6 +354,7 @@ public class GameLogic {
 			}
 		}
 		cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
+		moved = true;
 
 	}
 
@@ -410,6 +414,7 @@ public class GameLogic {
 	}
 
 	final int numberOfPlayers = 2;
+	private Boolean moved;
 
 	public void checkForWinner() {
 		Alert alert = new Alert(AlertType.INFORMATION);
