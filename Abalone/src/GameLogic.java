@@ -170,7 +170,7 @@ public class GameLogic {
 				int sum = deltaX + deltaY;
 
 				if (distance < 1.5 && distance != 0 && sum != 0 && checkForCrash(selectedCell, cell)
-						&& cell.getPiece().getPlayer() != currentPlayer) {
+						&& (!cell.hasPieceOf(currentPlayer))) {
 					System.out.println("Add x=" + cell.getxLocation() + " y=" + cell.getyLocation());
 
 					destinations.add(cell);
@@ -230,6 +230,7 @@ public class GameLogic {
 
 		if (selectedCells.size() == 1 || inLane(destinationCell)) {
 			swapPiecesInLane(destinationCell);
+			movePerformed();
 		} else {
 			boolean letsdo = true;
 			for (Cell cell : selectedCells) {
@@ -241,15 +242,26 @@ public class GameLogic {
 				for (Cell cell : selectedCells) {
 					Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
 					swapPiecesParallel(cell, destination);
+					movePerformed();
 				}
 			} else
 				return;
 		}
 
 		System.out.println("After Move: " + cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
+	}
+
+	private void movePerformed() {
 		selectedCells = new ArrayList<Cell>();
 		changePlayer();
 	}
+	
+	/**
+	 * 
+	 * @param toMove
+	 * @param destination
+	 * @return
+	 */
 
 	private boolean checkForCrash(Cell toMove, Cell destination) {
 		int deltaX = destination.getxLocation() - toMove.getxLocation();
@@ -257,15 +269,10 @@ public class GameLogic {
 
 		for (Cell cell : selectedCells) {
 			Cell cellToCheck = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
-			// System.out.println("Cell to check : x="+
-			// cellToCheck.getxLocation() + " y=" + cellToCheck.getyLocation());
-			PieceType playerType = cellToCheck.getPiece().getPlayer();
-			if (playerType == currentPlayer && !selectedCells.contains(cellToCheck)) {
-				// System.out.println("failed");
+			if (cellToCheck.hasPieceOf(currentPlayer) && !isSelected(cellToCheck)) {
 				return false;
 			}
 		}
-		// System.out.println("passed");
 		return true;
 	}
 
@@ -289,20 +296,19 @@ public class GameLogic {
 		int deltaY = yDestination - getLastSelected().getyLocation();
 
 		// is there a piece of the other player?
-		if (destination.getPiece().getPlayer() == getOtherPlayer()) {
+		if (destination.hasPieceOf(getOtherPlayer())) {
 			// is there a piece behind? -> dont move
 			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
-			if (cellBehind.getCellType() == CellType.EMPTY && cellBehind.getPiece().getPlayer() != PieceType.DEFAULT) {
+			if (cellBehind.isPlayerCell()) {
 				System.out.println("dont move, there is a piece behind!");
 				return;
 			}
 			// else: can I push it -> a) from the board b) on the board
-			else if (cellBehind.getCellType() == CellType.GUTTER) {
+			else if (cellBehind.isGutter()) {
 				System.out.println("Piece kicked off field");
 				destination.removePiece();
-			} else if (cellBehind.getCellType() == CellType.EMPTY
-					&& cellBehind.getPiece().getPlayer() == PieceType.DEFAULT) {
-				System.out.println("unfriedly cell moved");
+			} else if (cellBehind.isEmptyCell()) {
+				System.out.println("unfriendly cell moved");
 				cellBehind.addPiece(cells[yDestination][xDestination].removePiece());
 			}
 		}
@@ -328,19 +334,18 @@ public class GameLogic {
 		int deltaY = yDestination - yToMove;
 
 		// is there a piece of the other player?
-		if (destination.getPiece().getPlayer() == getOtherPlayer()) {
+		if (destination.hasPieceOf(getOtherPlayer())) {
 			// is there a piece behind? -> dont move
 			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
-			if (cellBehind.getCellType() == CellType.EMPTY && cellBehind.getPiece().getPlayer() != PieceType.DEFAULT) {
+			if (cellBehind.isPlayerCell()) {
 				System.out.println("dont move, there is a piece behind!");
 				return;
 			}
 			// else: can I push it -> a) from the board b) on the board
-			else if (cellBehind.getCellType() == CellType.GUTTER) {
+			else if (cellBehind.isGutter()) {
 				System.out.println("Piece kicked off field");
 				destination.removePiece();
-			} else if (cellBehind.getCellType() == CellType.EMPTY
-					&& cellBehind.getPiece().getPlayer() == PieceType.DEFAULT) {
+			} else if (cellBehind.isEmptyCell()) {
 				System.out.println("unfriedly cell moved");
 				cellBehind.addPiece(cells[yDestination][xDestination].removePiece());
 			}
@@ -360,10 +365,10 @@ public class GameLogic {
 		int deltaX = xDestination - xToMove;
 		int deltaY = yDestination - yToMove;
 
-		if (destination.getPiece().getPlayer() == getOtherPlayer()) {
+		if (destination.hasPieceOf(getOtherPlayer())) {
 			// is there a piece behind? -> dont move
 			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
-			if (cellBehind.getCellType() == CellType.EMPTY && cellBehind.getPiece().getPlayer() != PieceType.DEFAULT) {
+			if (cellBehind.isPlayerCell()) {
 				System.out.println("dont move, there is a piece behind!");
 				return false;
 			}
@@ -393,13 +398,9 @@ public class GameLogic {
 	}
 
 	public void changePlayer() {
-
 		setCurrentPlayer(getOtherPlayer());
-
 		round++;
-
 		initializeSelectable();
-
 	}
 
 	public PieceType getOtherPlayer() {
@@ -434,7 +435,7 @@ public class GameLogic {
 		int counter = 0;
 		for (Cell[] linesOfCells : cells) {
 			for (Cell cell : linesOfCells) {
-				if (cell.getPiece().getPlayer() == player)
+				if (cell.hasPieceOf(player))
 					counter++;
 			}
 		}

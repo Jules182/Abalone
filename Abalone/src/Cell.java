@@ -94,9 +94,21 @@ public class Cell extends Control {
 	}
 
 	public boolean hasPieceOf(PieceType player) {
-		return (player == piece.getPlayer());
+			return (player == piece.getPlayer());
+	}
+	
+	public boolean isEmptyCell() {
+		return ((celltype == CellType.EMPTY) && hasPieceOf(PieceType.DEFAULT));
+	}
+	
+	public boolean isPlayerCell() {
+		return ((celltype == CellType.EMPTY) && (!hasPieceOf(PieceType.DEFAULT)));
 	}
 
+	public boolean isGutter() {
+		return (celltype == CellType.GUTTER);
+	}
+	
 	// Tutorial to make this method:
 	// http://stackoverflow.com/questions/7198144/how-to-draw-a-n-sided-regular-circle-in-cartesian-coordinates
 	private Double[] makeVertices(int radius, int sides) {
@@ -121,27 +133,16 @@ public class Cell extends Control {
 		return xLocation;
 	}
 
-	public void setxLocation(int xLocation) {
-		this.xLocation = xLocation;
-	}
-
 	public int getyLocation() {
 		return yLocation;
-	}
-
-	public void setyLocation(int yLocation) {
-		this.yLocation = yLocation;
 	}
 
 	public Piece getPiece() {
 		return piece;
 	}
 
-	public void setPiece(Piece piece) {
-		this.piece = piece;
-	}
-
 	public CellType getCellType() {
 		return celltype;
 	}
+
 }
