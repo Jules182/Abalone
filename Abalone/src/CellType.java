@@ -1,7 +1,7 @@
 
 public enum CellType {
 	
-	EMPTY,
+	CELL,
 	GUTTER,
 	OUTSIDE
 

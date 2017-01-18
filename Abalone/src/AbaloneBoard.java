@@ -59,7 +59,7 @@ public class AbaloneBoard extends Pane {
 	private void createCells() {
 		for (int i = 0; i < cells.length; i++) {
 			for (int j = 0; j < cells[i].length; j++) {
-				cells[i][j] = new Cell(CellType.EMPTY, this.game, j, i);
+				cells[i][j] = new Cell(CellType.CELL, this.game, j, i);
 			}
 		}
 		createOutsides();
@@ -71,36 +71,36 @@ public class AbaloneBoard extends Pane {
 
 	}
 
-	private void createPieceTypeInLine(int line, int[] place, CellType celltype) {
+	private void replaceCellTypeInLine(int line, int[] place, CellType celltype) {
 		for (int i : place) {
 			cells[line][i] = new Cell(celltype, this.game, i, line);
 		}
 	}
 
 	private void createGutters() {
-		createPieceTypeInLine(0, new int[] { 0, 1, 2, 3, 4, 5, 6 }, CellType.GUTTER);
-		createPieceTypeInLine(1, new int[] { 0, 6, 7 }, CellType.GUTTER);
-		createPieceTypeInLine(2, new int[] { 0, 7, 8 }, CellType.GUTTER);
-		createPieceTypeInLine(3, new int[] { 0, 8, 9 }, CellType.GUTTER);
-		createPieceTypeInLine(4, new int[] { 0, 9, 10 }, CellType.GUTTER);
-		createPieceTypeInLine(5, new int[] { 0, 10 }, CellType.GUTTER);
-		createPieceTypeInLine(6, new int[] { 0, 1, 10 }, CellType.GUTTER);
-		createPieceTypeInLine(7, new int[] { 1, 2, 10 }, CellType.GUTTER);
-		createPieceTypeInLine(8, new int[] { 2, 3, 10 }, CellType.GUTTER);
-		createPieceTypeInLine(9, new int[] { 3, 4, 10 }, CellType.GUTTER);
-		createPieceTypeInLine(10, new int[] { 4, 5, 6, 7, 8, 9, 10 }, CellType.GUTTER);
+		replaceCellTypeInLine(0, new int[] { 0, 1, 2, 3, 4, 5, 6 }, CellType.GUTTER);
+		replaceCellTypeInLine(1, new int[] { 0, 6, 7 }, CellType.GUTTER);
+		replaceCellTypeInLine(2, new int[] { 0, 7, 8 }, CellType.GUTTER);
+		replaceCellTypeInLine(3, new int[] { 0, 8, 9 }, CellType.GUTTER);
+		replaceCellTypeInLine(4, new int[] { 0, 9, 10 }, CellType.GUTTER);
+		replaceCellTypeInLine(5, new int[] { 0, 10 }, CellType.GUTTER);
+		replaceCellTypeInLine(6, new int[] { 0, 1, 10 }, CellType.GUTTER);
+		replaceCellTypeInLine(7, new int[] { 1, 2, 10 }, CellType.GUTTER);
+		replaceCellTypeInLine(8, new int[] { 2, 3, 10 }, CellType.GUTTER);
+		replaceCellTypeInLine(9, new int[] { 3, 4, 10 }, CellType.GUTTER);
+		replaceCellTypeInLine(10, new int[] { 4, 5, 6, 7, 8, 9, 10 }, CellType.GUTTER);
 
 	}
 
 	private void createOutsides() {
-		createPieceTypeInLine(0, new int[] { 7, 8, 9, 10 }, CellType.OUTSIDE);
-		createPieceTypeInLine(1, new int[] { 8, 9, 10 }, CellType.OUTSIDE);
-		createPieceTypeInLine(2, new int[] { 9, 10 }, CellType.OUTSIDE);
-		createPieceTypeInLine(3, new int[] { 10 }, CellType.OUTSIDE);
-		createPieceTypeInLine(7, new int[] { 0 }, CellType.OUTSIDE);
-		createPieceTypeInLine(8, new int[] { 0, 1 }, CellType.OUTSIDE);
-		createPieceTypeInLine(9, new int[] { 0, 1, 2 }, CellType.OUTSIDE);
-		createPieceTypeInLine(10, new int[] { 0, 1, 2, 3 }, CellType.OUTSIDE);
+		replaceCellTypeInLine(0, new int[] { 7, 8, 9, 10 }, CellType.OUTSIDE);
+		replaceCellTypeInLine(1, new int[] { 8, 9, 10 }, CellType.OUTSIDE);
+		replaceCellTypeInLine(2, new int[] { 9, 10 }, CellType.OUTSIDE);
+		replaceCellTypeInLine(3, new int[] { 10 }, CellType.OUTSIDE);
+		replaceCellTypeInLine(7, new int[] { 0 }, CellType.OUTSIDE);
+		replaceCellTypeInLine(8, new int[] { 0, 1 }, CellType.OUTSIDE);
+		replaceCellTypeInLine(9, new int[] { 0, 1, 2 }, CellType.OUTSIDE);
+		replaceCellTypeInLine(10, new int[] { 0, 1, 2, 3 }, CellType.OUTSIDE);
 	}
 
 	private void setPlayerInLine(int line, int[] place, PieceType player) {

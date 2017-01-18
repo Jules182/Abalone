@@ -30,8 +30,8 @@ public class Cell extends Control {
 		this.celltype = celltype;
 
 		polygon = new Polygon();
-		piece = new Piece(PieceType.DEFAULT);
-		if (celltype == CellType.EMPTY)
+		piece = new Piece(PieceType.EMPTY);
+		if (celltype == CellType.CELL)
 			createHexagon();
 
 		setOnMouseClicked((MouseEvent event) -> {
@@ -45,7 +45,7 @@ public class Cell extends Control {
 			else if (game.isLastSelected(this)) {
 				game.deselect(this);
 				game.checkDestinations();
-			// if it is a destination, 
+				// if it is a destination,
 			} else if (game.isDestination(this) && (game.getNumberOfSelectedCells() != 0)) {
 				// move here
 				game.move(this);
@@ -55,14 +55,14 @@ public class Cell extends Control {
 
 	public void addPiece(Piece piece) {
 		this.piece = piece;
-		if (piece.getPlayer() != PieceType.DEFAULT)
+		if (piece.getPlayer() != PieceType.EMPTY)
 			getChildren().add(this.piece);
 	}
 
 	public Piece removePiece() {
 		Piece oldPiece = this.piece;
 		getChildren().remove(this.piece);
-		this.piece = new Piece(PieceType.DEFAULT);
+		this.piece = new Piece(PieceType.EMPTY);
 		return oldPiece;
 	}
 
@@ -71,11 +71,11 @@ public class Cell extends Control {
 	}
 
 	public boolean isEmptyCell() {
-		return ((celltype == CellType.EMPTY) && hasPieceOf(PieceType.DEFAULT));
+		return ((celltype == CellType.CELL) && hasPieceOf(PieceType.EMPTY));
 	}
 
 	public boolean isPlayerCell() {
-		return ((celltype == CellType.EMPTY) && (!hasPieceOf(PieceType.DEFAULT)));
+		return ((celltype == CellType.CELL) && (!hasPieceOf(PieceType.EMPTY)));
 	}
 
 	public boolean isGutter() {
