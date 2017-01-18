@@ -7,10 +7,11 @@ import javafx.scene.input.KeyEvent;
 //class definition for a custom control
 class CustomControl extends Control {
 	// constructor for the class
-	public CustomControl() {
+	public CustomControl(GameLogic game) {
+		this.game = game;
 		// set a default skin and generate a game board
 		setSkin(new CustomControlSkin(this));
-		board = new AbaloneBoard();
+		board = new AbaloneBoard(game);
 		getChildren().addAll(board);
 
 		setOnKeyPressed((KeyEvent event) -> {
@@ -25,7 +26,7 @@ class CustomControl extends Control {
 
 	public void resetBoard() {
 		getChildren().remove(board);
-		board = new AbaloneBoard();
+		board = new AbaloneBoard(game);
 		getChildren().add(board);
 	}
 
@@ -38,5 +39,6 @@ class CustomControl extends Control {
 	}
 
 	// private fields of the class
+	private GameLogic game;
 	private AbaloneBoard board;
 }

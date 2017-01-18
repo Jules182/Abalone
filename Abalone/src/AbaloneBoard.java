@@ -18,13 +18,14 @@ import javafx.scene.paint.Color;
 
 public class AbaloneBoard extends Pane {
 
+	private GameLogic game;
+	
 	private VBox vbox;
 	private HBox[] hboxes;
 	private Cell[][] cells = new Cell[11][11];
-	private GameLogic game;
 
-	public AbaloneBoard() {
-		game = new GameLogic();
+	public AbaloneBoard(GameLogic game) {
+		this.game = game;
 		game.setCurrentPlayer(PieceType.PLAYER1);
 		createCells();
 		game.setCells(cells);

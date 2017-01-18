@@ -299,19 +299,13 @@ public class GameLogic {
 		if (destination.hasPieceOf(getOtherPlayer())) {
 			// is there a piece behind? -> dont move
 			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
-			Cell cell2Behind = null;
-			try {
-				cell2Behind = cells[yDestination + deltaY + deltaY][xDestination + deltaX + deltaX];
-			} catch (ArrayIndexOutOfBoundsException e) {
-				moved = false;
-				return;
-			}
 
 			if (cellBehind.hasPieceOf(getCurrentPlayer())) {
 				System.out.println("dont move, there is a piece behind!");
 				moved = false;
 				return;
 			} else {
+				// push pieces depending on number of selected cells
 				switch (getNumberOfSelectedCells()) {
 				case 1:
 					moved = false;
@@ -320,7 +314,7 @@ public class GameLogic {
 					if (cellBehind.isPlayerCell()) {
 						moved = false;
 						return;
-					} 
+					}
 					// move one piece
 					else if (cellBehind.isGutter())
 						destination.removePiece();
@@ -328,18 +322,25 @@ public class GameLogic {
 						cellBehind.addPiece(destination.removePiece());
 					break;
 				case 3:
+					Cell cell2Behind = null;
 					// move one piece
 					if (cellBehind.isGutter())
 						destination.removePiece();
 					else if (cellBehind.isEmptyCell())
 						cellBehind.addPiece(destination.removePiece());
-					
-					// move two pieces
-					else if (cell2Behind.isPlayerCell()) {
+
+					try {
+						cell2Behind = cells[yDestination + deltaY + deltaY][xDestination + deltaX + deltaX];
+					} catch (ArrayIndexOutOfBoundsException e) {
 						moved = false;
 						return;
 					}
-					else if (cell2Behind.isGutter()) {
+
+					// move two pieces
+					if (cell2Behind.isPlayerCell()) {
+						moved = false;
+						return;
+					} else if (cell2Behind.isGutter()) {
 						cellBehind.removePiece();
 						cellBehind.addPiece(destination.removePiece());
 					} else if (cellBehind.hasPieceOf(getOtherPlayer())) {

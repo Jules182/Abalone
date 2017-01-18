@@ -9,6 +9,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class AbaloneApplication extends Application {
+	
+	private GameLogic game;
+	
 	private VBox mainlayout;
 	private CustomControl cc_custom;
 	// menu
@@ -16,12 +19,14 @@ public class AbaloneApplication extends Application {
 	private MenuItem miReset;
 	private MenuItem miQuit;
 	private Menu menuGame;
+	
 
 	@Override
 	public void init() {
 		// initialise the pane, add menu and CustomControl
+		game = new GameLogic();
 		mainlayout = new VBox();
-		cc_custom = new CustomControl();
+		cc_custom = new CustomControl(game);
 
 		menubar = new MenuBar();
 		menuGame = new Menu("Game");
