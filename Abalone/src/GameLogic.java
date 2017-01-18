@@ -216,10 +216,11 @@ public class GameLogic {
 	 *            Cell in which direction the cells will be moved
 	 */
 	public void move(Cell destinationCell) {
-		
+
 		moved = false;
 
-		System.out.println("Before Move: " + cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
+		System.out.println("Before Move: "
+				+ cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
 
 		Cell lastSelected = getLastSelected();
 
@@ -237,7 +238,7 @@ public class GameLogic {
 			boolean letsdo = true;
 			for (Cell cell : selectedCells) {
 				Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
-				if (!dirtyHarryCheckForParallelMovement(cell, destination))
+				if (!checkForParallelMovement(cell, destination))
 					letsdo = false;
 			}
 			if (letsdo) {
@@ -249,15 +250,14 @@ public class GameLogic {
 				return;
 		}
 
-		System.out.println("After Move: " + cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
-		if (moved) movePerformed();
+		System.out.println("After Move: "
+				+ cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
+		if (moved) {
+			selectedCells = new ArrayList<Cell>();
+			changePlayer();
+		}
 	}
 
-	private void movePerformed() {
-		selectedCells = new ArrayList<Cell>();
-		changePlayer();
-	}
-	
 	/**
 	 * 
 	 * @param toMove
@@ -358,9 +358,8 @@ public class GameLogic {
 
 	}
 
-	private boolean dirtyHarryCheckForParallelMovement(Cell toMove, Cell destination) {
+	private boolean checkForParallelMovement(Cell toMove, Cell destination) {
 
-		// TODO HELP, PLEASE REFACTOR ME!!!1111
 		int xToMove = toMove.getxLocation();
 		int yToMove = toMove.getyLocation();
 		int xDestination = destination.getxLocation();
