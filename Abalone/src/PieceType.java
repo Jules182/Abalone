@@ -4,8 +4,7 @@ public enum PieceType {
 
 	DEFAULT(Color.BLACK, Color.BLACK),
 	PLAYER1(Color.GREEN, Color.LIMEGREEN), 
-	PLAYER2(Color.RED, Color.LIGHTCORAL), 
-	PLAYER3(Color.BLUE, Color.LIGHTBLUE);
+	PLAYER2(Color.RED, Color.LIGHTCORAL);
 
 	private Color pieceColor;
 	private Color selectColor;

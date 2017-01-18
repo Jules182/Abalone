@@ -8,9 +8,12 @@ import javafx.scene.control.Alert.AlertType;
 public class GameLogic {
 
 	// FIELDS
+	
+	final int numberOfPlayers = 2;
 
 	private PieceType currentPlayer;
 	private Cell[][] cells = new Cell[11][11];
+
 	private ArrayList<Cell> selectedCells = new ArrayList<Cell>();
 
 	private ArrayList<Cell> selectableCells = new ArrayList<Cell>();
@@ -19,22 +22,12 @@ public class GameLogic {
 
 	private int round = 0;
 
-	// CONSTRCTOR
-
-	public GameLogic(Cell[][] cells) {
-		this.cells = cells;
-	}
-
 	// GETTER / SETTER
 
-	public ArrayList<Cell> getSelectedCells() {
-		return selectedCells;
+	public void setCells(Cell[][] cells) {
+		this.cells = cells;
 	}
-
-	public void setSelectedCells(ArrayList<Cell> selectedCells) {
-		this.selectedCells = selectedCells;
-	}
-
+	
 	public int getNumberOfSelectedCells() {
 		return selectedCells.size();
 	}
@@ -113,16 +106,11 @@ public class GameLogic {
 	public boolean isDestination(Cell cell) {
 		return destinations.contains(cell);
 	}
-	
-	
-	
-	
 
 	// METHODS
 
 	/**
-	 * Initializes the selectable cells. All cells of the current player will be
-	 * selectable
+	 * Initializes the selectable cells. All cells of the current player will be selectable
 	 */
 	public void initializeSelectable() {
 		for (Cell[] line : cells) {
@@ -134,8 +122,7 @@ public class GameLogic {
 	}
 
 	/**
-	 * Detects all neighbours of a cell. These cells become the selectable
-	 * cells.
+	 * Detects all neighbours of a cell and removes the non-neighbor cells from selectable
 	 */
 	public void findAllNeighbours() {
 
@@ -151,6 +138,7 @@ public class GameLogic {
 			int sum = deltaX + deltaY;
 
 			if (distance > 1.5 && sum != 0) {
+				// remove cells that are not neighbors
 				toDelete.add(selectableCell);
 			}
 		}
@@ -206,23 +194,24 @@ public class GameLogic {
 		selectableCells = new ArrayList<Cell>();
 		if (lastPossibleCell != null)
 			selectableCells.add(lastPossibleCell);
-
 	}
 
 	/**
-	 * Moves the selected cells to the clicked cell (named: destinationCell)
+	 * Moves the selected cells towards the clicked cell (named: destinationCell)
 	 * 
 	 * @param destinationCell
 	 *            Cell in which direction the cells will be moved
 	 */
 	public void move(Cell destinationCell) {
 
-		moved = false;
+		moved = true;
 
 		System.out.println("Before Move: "
 				+ cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
 
+		// destination is always determinined in relation to last selected cell
 		Cell lastSelected = getLastSelected();
+		
 
 		int deltaX = destinationCell.getxLocation() - lastSelected.getxLocation();
 		int deltaY = destinationCell.getyLocation() - lastSelected.getyLocation();
@@ -247,12 +236,19 @@ public class GameLogic {
 					swapPiecesParallel(cell, destination);
 				}
 			} else
-				return;
+				moved = false;
+			return;
 		}
 
 		System.out.println("After Move: "
 				+ cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
+
 		if (moved) {
+			// wenn movement eine einzige methode ist:
+			// TODO cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
+//			for (Cell cell : selectedCells) {
+//				cell.getPiece().setPieceColor();
+//			}
 			selectedCells = new ArrayList<Cell>();
 			changePlayer();
 		}
@@ -279,8 +275,7 @@ public class GameLogic {
 	}
 
 	/**
-	 * Moves the selected cells to the clicked cell by swapping the first and
-	 * the destination
+	 * Moves the selected cells to the clicked cell by swapping the first and the destination
 	 * 
 	 * @param destination
 	 *            Cell in which direction the cells will be moved
@@ -303,6 +298,7 @@ public class GameLogic {
 			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
 			if (cellBehind.isPlayerCell()) {
 				System.out.println("dont move, there is a piece behind!");
+				moved = false;
 				return;
 			}
 			// else: can I push it -> a) from the board b) on the board
@@ -315,7 +311,6 @@ public class GameLogic {
 			}
 		}
 		cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
-		moved = true;
 	}
 
 	/**
@@ -342,6 +337,7 @@ public class GameLogic {
 			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
 			if (cellBehind.isPlayerCell()) {
 				System.out.println("dont move, there is a piece behind!");
+				moved = false;
 				return;
 			}
 			// else: can I push it -> a) from the board b) on the board
@@ -354,7 +350,6 @@ public class GameLogic {
 			}
 		}
 		cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
-		moved = true;
 
 	}
 
@@ -412,7 +407,6 @@ public class GameLogic {
 		return PieceType.PLAYER1;
 	}
 
-	final int numberOfPlayers = 2;
 	private Boolean moved;
 
 	public void checkForWinner() {
@@ -423,7 +417,6 @@ public class GameLogic {
 		if (getScore(PieceType.PLAYER1) == 0) {
 			alert.setContentText("Player 2 won!");
 			alert.showAndWait();
-
 		}
 
 		if (getScore(PieceType.PLAYER2) == 0) {
@@ -445,7 +438,7 @@ public class GameLogic {
 		}
 		return counter;
 	}
-	
+
 	public void updateSelectablePieces() {
 		// update selectablePieces properly depending on how many pieces are selected
 

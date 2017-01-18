@@ -24,9 +24,10 @@ public class AbaloneBoard extends Pane {
 	private GameLogic game;
 
 	public AbaloneBoard() {
-		game = new GameLogic(cells);
+		game = new GameLogic();
 		game.setCurrentPlayer(PieceType.PLAYER1);
 		createCells();
+		game.setCells(cells);
 		game.initializeSelectable();
 
 		Label label = new Label("displaying player");
