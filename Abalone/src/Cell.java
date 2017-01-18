@@ -9,7 +9,6 @@ import javafx.scene.shape.Polygon;
 
 public class Cell extends Control {
 
-	private GameLogic game;
 	private int sides = 6;
 	private int radius = 30;
 	Polygon polygon;
@@ -24,7 +23,6 @@ public class Cell extends Control {
 		super();
 
 		this.setSkin(new CellSkin(this));
-		this.game = game;
 		this.xLocation = xLocation;
 		this.yLocation = yLocation;
 		this.celltype = celltype;

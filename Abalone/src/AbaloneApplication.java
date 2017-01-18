@@ -5,29 +5,33 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class AbaloneApplication extends Application {
 	
 	private GameLogic game;
 	
-	private VBox mainlayout;
+	private BorderPane mainlayout;
 	private CustomControl cc_custom;
 	// menu
 	public MenuBar menubar;
 	private MenuItem miReset;
 	private MenuItem miQuit;
 	private Menu menuGame;
+
+	private Sidebar sidebar;
 	
 
 	@Override
 	public void init() {
 		// initialise the pane, add menu and CustomControl
 		game = new GameLogic();
-		mainlayout = new VBox();
+		mainlayout = new BorderPane();
 		cc_custom = new CustomControl(game);
+		sidebar = new Sidebar(game);
 
+		// menu bar
 		menubar = new MenuBar();
 		menuGame = new Menu("Game");
 		menubar.getMenus().addAll(menuGame);
@@ -36,7 +40,11 @@ public class AbaloneApplication extends Application {
 		miQuit = new MenuItem("Quit [ESC]");
 
 		menuGame.getItems().addAll(miReset, miQuit);
-		mainlayout.getChildren().addAll(menubar, cc_custom);
+		
+		// add panes
+		mainlayout.setTop(menubar);
+		mainlayout.setCenter(cc_custom);
+		mainlayout.setRight(sidebar);
 
 		miReset.setOnAction((ActionEvent event) -> {
 			cc_custom.resetBoard();
@@ -50,7 +58,7 @@ public class AbaloneApplication extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Abalone Game Team Markus&Julian");
-		primaryStage.setScene(new Scene(mainlayout, 600, 600));
+		primaryStage.setScene(new Scene(mainlayout, 700, 600));
 		primaryStage.setResizable(false);
 		primaryStage.show();
 	}

@@ -67,24 +67,6 @@ public class GameLogic {
 		this.setPlayerName(player.name());
 	}
 
-	// Player Name property to show current player in label
-	private StringProperty playerName = new SimpleStringProperty();
-
-	// Define a getter for the property's value
-	public final String getPlayerName() {
-		return playerName.get();
-	}
-
-	// Define a setter for the property's value
-	public final void setPlayerName(String value) {
-		playerName.set(value);
-	}
-
-	// Define a getter for the property itself
-	public StringProperty playerNameProperty() {
-		return playerName;
-	}
-
 	public boolean isLastSelected(Cell cell) {
 		if (selectedCells.isEmpty())
 			return false;
@@ -108,6 +90,28 @@ public class GameLogic {
 	// METHODS
 
 	// SELECTABLE PIECES AND DESTINATIONS
+
+	public void updateSelectablePieces() {
+		// update selectablePieces properly depending on how many pieces are selected
+
+		switch (getNumberOfSelectedCells()) {
+		case 0:
+			initializeSelectable();
+			break;
+		case 1:
+			findAllNeighbours();
+			break;
+		case 2:
+			findThirdInLine();
+			break;
+		case 3:
+			emptySelectableCells();
+			break;
+		default:
+			initializeSelectable();
+			break;
+		}
+	}
 
 	/**
 	 * Initializes the selectable cells. All cells of the current player will be selectable
@@ -419,6 +423,8 @@ public class GameLogic {
 	}
 
 	public void checkForWinner() {
+		setPiecesLeft(getPiecesLeft(PieceType.PLAYER1), getPiecesLeft(PieceType.PLAYER2));
+
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText(null);
 		alert.setTitle("Winner detected!");
@@ -446,28 +452,49 @@ public class GameLogic {
 			}
 		}
 		return counter;
+
 	}
 
-	public void updateSelectablePieces() {
-		// update selectablePieces properly depending on how many pieces are selected
+	// PROPERTIES
 
-		switch (getNumberOfSelectedCells()) {
-		case 0:
-			initializeSelectable();
-			break;
-		case 1:
-			findAllNeighbours();
-			break;
-		case 2:
-			findThirdInLine();
-			break;
-		case 3:
-			emptySelectableCells();
-			break;
-		default:
-			initializeSelectable();
-			break;
-		}
+	// properties to show changing values in labels
+	private StringProperty playerName = new SimpleStringProperty();
+	private StringProperty p1PiecesLeft = new SimpleStringProperty();
+	private StringProperty p2PiecesLeft = new SimpleStringProperty();
+	private StringProperty p1PiecesTaken = new SimpleStringProperty();
+	private StringProperty p2PiecesTaken = new SimpleStringProperty();
+
+	// property setters
+	public final void setPiecesLeft(int P1PiecesLeft, int P2PiecesLeft) {
+		p1PiecesLeft.set(Integer.toString(getPiecesLeft(PieceType.PLAYER1)));
+		p2PiecesLeft.set(Integer.toString(getPiecesLeft(PieceType.PLAYER2)));
+		p1PiecesTaken.set(Integer.toString(14 - getPiecesLeft(PieceType.PLAYER2)));
+		p2PiecesTaken.set(Integer.toString(14 - getPiecesLeft(PieceType.PLAYER1)));
+	}
+
+	public final void setPlayerName(String value) {
+		playerName.set(value);
+	}
+
+	// property getters
+	public StringProperty playerNameProperty() {
+		return playerName;
+	}
+
+	public StringProperty getP1PiecesLeftProperty() {
+		return p1PiecesLeft;
+	}
+
+	public StringProperty getP2PiecesLeftProperty() {
+		return p2PiecesLeft;
+	}
+
+	public StringProperty getP1PiecesTakenProperty() {
+		return p1PiecesTaken;
+	}
+
+	public StringProperty getP2PiecesTakenProperty() {
+		return p2PiecesTaken;
 	}
 
 }
