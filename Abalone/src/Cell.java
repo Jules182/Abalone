@@ -44,7 +44,6 @@ public class Cell extends Control {
 
 				game.unmarkDestinations();
 				game.checkDestinations();
-				game.markDestinations();
 			}
 			// if Cell was recently selected
 			else if (game.isLastSelected(this)) {
@@ -54,7 +53,6 @@ public class Cell extends Control {
 				game.unmarkDestinations();
 				if (game.getNumberOfSelectedCells() > 0) {
 					game.checkDestinations();
-					game.markDestinations();
 				}
 			} else if (game.isDestination(this) && (game.getNumberOfSelectedCells() != 0)
 					&& (getPiece().getPlayer() != game.getCurrentPlayer())) {

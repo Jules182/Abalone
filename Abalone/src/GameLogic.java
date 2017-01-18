@@ -22,6 +22,7 @@ public class GameLogic {
 	private ArrayList<Cell> destinations = new ArrayList<Cell>();
 
 	private int round = 0;
+	private Boolean moved;
 
 	// GETTER / SETTER
 
@@ -110,6 +111,8 @@ public class GameLogic {
 
 	// METHODS
 
+	// SELECTABLE PIECES AND DESTINATIONS
+
 	/**
 	 * Initializes the selectable cells. All cells of the current player will be selectable
 	 */
@@ -147,27 +150,6 @@ public class GameLogic {
 		selectableCells.removeAll(toDelete);
 	}
 
-	public void checkDestinations() {
-		destinations = new ArrayList<Cell>();
-		Cell selectedCell = getLastSelected();
-
-		for (Cell[] linesOfCells : cells) {
-			for (Cell cell : linesOfCells) {
-				int deltaX = cell.getxLocation() - selectedCell.getxLocation();
-				int deltaY = cell.getyLocation() - selectedCell.getyLocation();
-				double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-				int sum = deltaX + deltaY;
-
-				if (distance < 1.5 && distance != 0 && sum != 0 && checkForCrash(selectedCell, cell)
-						&& (!cell.hasPieceOf(currentPlayer))) {
-					System.out.println("Add x=" + cell.getxLocation() + " y=" + cell.getyLocation());
-
-					destinations.add(cell);
-				}
-			}
-		}
-	}
-
 	/**
 	 * Detects the third piece in a line which is the last selectable cell.
 	 */
@@ -198,6 +180,46 @@ public class GameLogic {
 	}
 
 	/**
+	 * Checks where selected Pieces can move and highlights those destinations
+	 */
+
+	public void checkDestinations() {
+		destinations = new ArrayList<Cell>();
+		Cell selectedCell = getLastSelected();
+
+		for (Cell[] linesOfCells : cells) {
+			for (Cell cell : linesOfCells) {
+				int deltaX = cell.getxLocation() - selectedCell.getxLocation();
+				int deltaY = cell.getyLocation() - selectedCell.getyLocation();
+				double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+				int sum = deltaX + deltaY;
+
+				if (distance < 1.5 && distance != 0 && sum != 0 && checkForCrash(selectedCell, cell)
+						&& (!cell.hasPieceOf(currentPlayer))) {
+					System.out.println("Add x=" + cell.getxLocation() + " y=" + cell.getyLocation());
+
+					destinations.add(cell);
+				}
+			}
+		}
+		markDestinations();
+	}
+
+	public void markDestinations() {
+		for (Cell destination : getDestinations()) {
+			destination.polygon.setFill(Color.LIGHTSTEELBLUE);
+		}
+	}
+
+	public void unmarkDestinations() {
+		for (Cell destination : getDestinations()) {
+			destination.polygon.setFill(Color.LIGHTBLUE);
+		}
+	}
+
+	// MOVEMENT
+
+	/**
 	 * Moves the selected cells towards the clicked cell (named: destinationCell)
 	 * 
 	 * @param destinationCell
@@ -210,32 +232,34 @@ public class GameLogic {
 		System.out.println("Before Move: "
 				+ cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
 
-		// destination is always determinined in relation to last selected cell
+		// destination is always determined in relation to last selected cell
 		Cell lastSelected = getLastSelected();
 
 		int deltaX = destinationCell.getxLocation() - lastSelected.getxLocation();
 		int deltaY = destinationCell.getyLocation() - lastSelected.getyLocation();
 
 		ArrayList<Piece> movedPieces = new ArrayList<Piece>();
-		
+
 		for (Cell cell : selectedCells) {
 			movedPieces.add(cell.getPiece());
 		}
 
-		if (selectedCells.size() == 1 || inLane(destinationCell)) {
+		if (selectedCells.size() == 1 || isInLane(destinationCell)) {
 			// TODO change to swappiecesinparallel, change to "movement" instead of 2 methods
 			swapPiecesInLane(destinationCell);
 		} else {
 			boolean letsdo = true;
 			for (Cell cell : selectedCells) {
 				Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
-				if (!checkForParallelMovement(cell, destination))
+				if (destination.isPlayerCell()) {
+					System.out.println("dont move, there is no space!");
 					letsdo = false;
+				}
 			}
 			if (letsdo) {
-				for (Cell cell : selectedCells) {
-					Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
-					swapPiecesParallel(cell, destination);
+				for (Cell toMove : selectedCells) {
+					Cell destination = cells[toMove.getyLocation() + deltaY][toMove.getxLocation() + deltaX];
+					destination.addPiece(toMove.removePiece());
 				}
 			} else {
 				moved = false;
@@ -248,10 +272,10 @@ public class GameLogic {
 		if (moved) {
 			// wenn movement eine einzige methode ist:
 			// TODO cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
-			
-			 for (Piece piece : movedPieces) {
-			 piece.setPieceColor();
-			 }
+
+			for (Piece piece : movedPieces) {
+				piece.setPieceColor();
+			}
 
 			selectedCells = new ArrayList<Cell>();
 			unmarkDestinations();
@@ -259,6 +283,45 @@ public class GameLogic {
 			changePlayer();
 		}
 	}
+
+	/**
+	 * Moves the selected cells to the clicked cell by swapping the first and the destination
+	 * 
+	 * @param destination
+	 *            Cell in which direction the cells will be moved
+	 */
+	private void swapPiecesInLane(Cell destination) {
+
+		Cell toMove = selectedCells.get(0);
+
+		int xDestination = destination.getxLocation();
+		int yDestination = destination.getyLocation();
+
+		int deltaX = xDestination - getLastSelected().getxLocation();
+		int deltaY = yDestination - getLastSelected().getyLocation();
+
+		// is there a piece of the other player?
+		if (destination.hasPieceOf(getOtherPlayer())) {
+			// is there a piece behind? -> dont move
+			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
+			if (cellBehind.isPlayerCell()) {
+				System.out.println("dont move, there is a piece behind!");
+				moved = false;
+				return;
+			}
+			// else: can I push it -> a) from the board b) on the board
+			else if (cellBehind.isGutter()) {
+				System.out.println("Piece kicked off field");
+				destination.removePiece();
+			} else if (cellBehind.isEmptyCell()) {
+				System.out.println("unfriendly cell moved");
+				cellBehind.addPiece(destination.removePiece());
+			}
+		}
+		destination.addPiece(toMove.removePiece());
+	}
+
+	// CHECKS
 
 	/**
 	 * 
@@ -281,112 +344,13 @@ public class GameLogic {
 	}
 
 	/**
-	 * Moves the selected cells to the clicked cell by swapping the first and the destination
-	 * 
-	 * @param destination
-	 *            Cell in which direction the cells will be moved
-	 */
-	private void swapPiecesInLane(Cell destination) {
-
-		Cell toMove = selectedCells.get(0);
-
-		int xToMove = toMove.getxLocation();
-		int yToMove = toMove.getyLocation();
-		int xDestination = destination.getxLocation();
-		int yDestination = destination.getyLocation();
-
-		int deltaX = xDestination - getLastSelected().getxLocation();
-		int deltaY = yDestination - getLastSelected().getyLocation();
-
-		// is there a piece of the other player?
-		if (destination.hasPieceOf(getOtherPlayer())) {
-			// is there a piece behind? -> dont move
-			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
-			if (cellBehind.isPlayerCell()) {
-				System.out.println("dont move, there is a piece behind!");
-				moved = false;
-				return;
-			}
-			// else: can I push it -> a) from the board b) on the board
-			else if (cellBehind.isGutter()) {
-				System.out.println("Piece kicked off field");
-				destination.removePiece();
-			} else if (cellBehind.isEmptyCell()) {
-				System.out.println("unfriendly cell moved");
-				cellBehind.addPiece(cells[yDestination][xDestination].removePiece());
-			}
-		}
-		cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
-	}
-
-	/**
-	 * Moves each cells to the destination cell (parallel)
-	 * 
-	 * @param toMove
-	 *            Cell to Move
-	 * @param destination
-	 *            destination Cell
-	 */
-	private void swapPiecesParallel(Cell toMove, Cell destination) {
-
-		int xToMove = toMove.getxLocation();
-		int yToMove = toMove.getyLocation();
-		int xDestination = destination.getxLocation();
-		int yDestination = destination.getyLocation();
-
-		int deltaX = xDestination - xToMove;
-		int deltaY = yDestination - yToMove;
-
-		// is there a piece of the other player?
-		if (destination.hasPieceOf(getOtherPlayer())) {
-			// is there a piece behind? -> dont move
-			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
-			if (cellBehind.isPlayerCell()) {
-				System.out.println("dont move, there is a piece behind!");
-				moved = false;
-				return;
-			}
-			// else: can I push it -> a) from the board b) on the board
-			else if (cellBehind.isGutter()) {
-				System.out.println("Piece kicked off field");
-				destination.removePiece();
-			} else if (cellBehind.isEmptyCell()) {
-				System.out.println("unfriedly cell moved");
-				cellBehind.addPiece(cells[yDestination][xDestination].removePiece());
-			}
-		}
-		cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
-
-	}
-
-	private boolean checkForParallelMovement(Cell toMove, Cell destination) {
-
-		int xToMove = toMove.getxLocation();
-		int yToMove = toMove.getyLocation();
-		int xDestination = destination.getxLocation();
-		int yDestination = destination.getyLocation();
-
-		int deltaX = xDestination - xToMove;
-		int deltaY = yDestination - yToMove;
-
-		Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
-
-		if (destination.hasPieceOf(getOtherPlayer()) && cellBehind.isPlayerCell()) {
-			// is there a piece behind? -> dont move
-			System.out.println("dont move, there is a piece behind!");
-			return false;
-		}
-		return true;
-	}
-
-	/**
 	 * Checks if the clicked cell is in lane to decide the correct swap method
 	 * 
 	 * @param destination
 	 *            Cell in which direction the cells will be moved
 	 * @return is the cell in lane?
 	 */
-	private boolean inLane(Cell destination) {
+	private boolean isInLane(Cell destination) {
 
 		Cell firstCell = selectedCells.get(0);
 		Cell secondCell = selectedCells.get(1);
@@ -411,8 +375,6 @@ public class GameLogic {
 			return PieceType.PLAYER2;
 		return PieceType.PLAYER1;
 	}
-
-	private Boolean moved;
 
 	public void checkForWinner() {
 		Alert alert = new Alert(AlertType.INFORMATION);
@@ -463,18 +425,6 @@ public class GameLogic {
 		default:
 			initializeSelectable();
 			break;
-		}
-	}
-
-	public void markDestinations() {
-		for (Cell destination : getDestinations()) {
-			destination.polygon.setFill(Color.LIGHTSTEELBLUE);
-		}
-	}
-
-	public void unmarkDestinations() {
-		for (Cell destination : getDestinations()) {
-			destination.polygon.setFill(Color.LIGHTBLUE);
 		}
 	}
 
