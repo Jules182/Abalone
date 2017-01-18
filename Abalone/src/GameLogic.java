@@ -244,7 +244,6 @@ public class GameLogic {
 		int deltaY = destinationCell.getyLocation() - lastSelected.getyLocation();
 
 		if (selectedCells.size() == 1 || isInLane(destinationCell)) {
-			// TODO change to swappiecesinparallel, change to "movement" instead of 2 methods
 			movePiecesInLane(destinationCell);
 		} else {
 			// parallel movement
@@ -270,13 +269,9 @@ public class GameLogic {
 				+ cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
 
 		if (moved) {
-			// wenn movement eine einzige methode ist:
-			// TODO cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
-
 			for (Piece piece : movedPieces) {
 				piece.setPieceColor();
 			}
-
 			selectedCells = new ArrayList<Cell>();
 			unmarkDestinations();
 			checkForWinner();
@@ -304,27 +299,59 @@ public class GameLogic {
 		if (destination.hasPieceOf(getOtherPlayer())) {
 			// is there a piece behind? -> dont move
 			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
-			
-			if (cellBehind.isPlayerCell()) {
+			Cell cell2Behind = null;
+			try {
+				cell2Behind = cells[yDestination + deltaY + deltaY][xDestination + deltaX + deltaX];
+			} catch (ArrayIndexOutOfBoundsException e) {
+				moved = false;
+				return;
+			}
+
+			if (cellBehind.hasPieceOf(getCurrentPlayer())) {
 				System.out.println("dont move, there is a piece behind!");
 				moved = false;
 				return;
-			}
-			else {
+			} else {
 				switch (getNumberOfSelectedCells()) {
-			case 1:
-				moved = false;
-				return;
-			case 2:
-			case 3:
-				if (cellBehind.isGutter()) destination.removePiece();
-				else if (cellBehind.isEmptyCell()) cellBehind.addPiece(destination.removePiece());
-				break;
+				case 1:
+					moved = false;
+					return;
+				case 2:
+					if (cellBehind.isPlayerCell()) {
+						moved = false;
+						return;
+					} 
+					// move one piece
+					else if (cellBehind.isGutter())
+						destination.removePiece();
+					else if (cellBehind.isEmptyCell())
+						cellBehind.addPiece(destination.removePiece());
+					break;
+				case 3:
+					// move one piece
+					if (cellBehind.isGutter())
+						destination.removePiece();
+					else if (cellBehind.isEmptyCell())
+						cellBehind.addPiece(destination.removePiece());
+					
+					// move two pieces
+					else if (cell2Behind.isPlayerCell()) {
+						moved = false;
+						return;
+					}
+					else if (cell2Behind.isGutter()) {
+						cellBehind.removePiece();
+						cellBehind.addPiece(destination.removePiece());
+					} else if (cellBehind.hasPieceOf(getOtherPlayer())) {
+						cell2Behind.addPiece(cellBehind.removePiece());
+						cellBehind.addPiece(destination.removePiece());
+					}
+					break;
 
-			default:
-				break;
+				default:
+					break;
+				}
 			}
-				}	
 		}
 		destination.addPiece(toMove.removePiece());
 	}
@@ -361,18 +388,18 @@ public class GameLogic {
 	private boolean isInLane(Cell destination) {
 		Cell firstCell = selectedCells.get(0);
 		Cell secondCell = selectedCells.get(1);
-		
+
 		int deltaXSelected = firstCell.getxLocation() - secondCell.getxLocation();
 		int deltaYSelected = firstCell.getyLocation() - secondCell.getyLocation();
-		
+
 		int deltaX = secondCell.getxLocation() - destination.getxLocation();
 		int deltaY = secondCell.getyLocation() - destination.getyLocation();
-		
-		if (getNumberOfSelectedCells() == 3) {	
+
+		if (getNumberOfSelectedCells() == 3) {
 			Cell thirdCell = selectedCells.get(2);
-		deltaX = thirdCell.getxLocation() - destination.getxLocation();
-		deltaY = thirdCell.getyLocation() - destination.getyLocation();
-			
+			deltaX = thirdCell.getxLocation() - destination.getxLocation();
+			deltaY = thirdCell.getyLocation() - destination.getyLocation();
+
 		}
 
 		return deltaX == deltaXSelected && deltaY == deltaYSelected;
@@ -395,21 +422,21 @@ public class GameLogic {
 		alert.setHeaderText(null);
 		alert.setTitle("Winner detected!");
 
-		if (getScore(PieceType.PLAYER1) == 0) {
+		if (getPiecesLeft(PieceType.PLAYER1) == 8) {
 			alert.setContentText("Player 2 won!");
 			alert.showAndWait();
 		}
 
-		if (getScore(PieceType.PLAYER2) == 0) {
+		if (getPiecesLeft(PieceType.PLAYER2) == 8) {
 			alert.setContentText("Player 1 won!");
 			alert.showAndWait();
 		}
 
-		System.out.println("P1: " + getScore(PieceType.PLAYER1) + " - P2: " + getScore(PieceType.PLAYER2));
+		System.out.println("P1: " + getPiecesLeft(PieceType.PLAYER1) + " - P2: " + getPiecesLeft(PieceType.PLAYER2));
 
 	}
 
-	private int getScore(PieceType player) {
+	private int getPiecesLeft(PieceType player) {
 		int counter = 0;
 		for (Cell[] linesOfCells : cells) {
 			for (Cell cell : linesOfCells) {

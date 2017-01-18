@@ -67,7 +67,7 @@ public class Cell extends Control {
 	}
 
 	public boolean hasPieceOf(PieceType player) {
-		return (player == piece.getPlayer());
+		return (celltype == CellType.CELL && player == piece.getPlayer());
 	}
 
 	public boolean isEmptyCell() {
