@@ -38,10 +38,6 @@ public class GameLogic {
 		return selectableCells.contains(cell) && (selectedCells.size() < 3);
 	}
 
-	public void setSelectable(Cell cell) {
-		selectableCells.add(cell);
-	}
-
 	public void emptySelectableCells() {
 		selectableCells = new ArrayList<Cell>();
 	}
@@ -185,9 +181,10 @@ public class GameLogic {
 
 	public void checkDestinations() {
 		unmarkDestinations();
-		
-		if (getNumberOfSelectedCells() == 0) return;
-		
+
+		if (getNumberOfSelectedCells() == 0)
+			return;
+
 		destinations = new ArrayList<Cell>();
 		Cell selectedCell = getLastSelected();
 
@@ -198,8 +195,7 @@ public class GameLogic {
 				double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 				int sum = deltaX + deltaY;
 
-				if (distance < 1.5 && sum != 0 && 
-						checkForCrash(selectedCell, cell)
+				if (distance < 1.5 && sum != 0 && checkForCrash(selectedCell, cell)
 						&& (!cell.hasPieceOf(currentPlayer))) {
 					System.out.println("Add x=" + cell.getxLocation() + " y=" + cell.getyLocation());
 
@@ -233,6 +229,10 @@ public class GameLogic {
 	public void move(Cell destinationCell) {
 
 		moved = true;
+		ArrayList<Piece> movedPieces = new ArrayList<Piece>();
+		for (Cell cell : selectedCells) {
+			movedPieces.add(cell.getPiece());
+		}
 
 		System.out.println("Before Move: "
 				+ cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
@@ -243,16 +243,11 @@ public class GameLogic {
 		int deltaX = destinationCell.getxLocation() - lastSelected.getxLocation();
 		int deltaY = destinationCell.getyLocation() - lastSelected.getyLocation();
 
-		ArrayList<Piece> movedPieces = new ArrayList<Piece>();
-
-		for (Cell cell : selectedCells) {
-			movedPieces.add(cell.getPiece());
-		}
-
 		if (selectedCells.size() == 1 || isInLane(destinationCell)) {
 			// TODO change to swappiecesinparallel, change to "movement" instead of 2 methods
-			swapPiecesInLane(destinationCell);
+			movePiecesInLane(destinationCell);
 		} else {
+			// parallel movement
 			boolean letsdo = true;
 			for (Cell cell : selectedCells) {
 				Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
@@ -295,7 +290,7 @@ public class GameLogic {
 	 * @param destination
 	 *            Cell in which direction the cells will be moved
 	 */
-	private void swapPiecesInLane(Cell destination) {
+	private void movePiecesInLane(Cell destination) {
 
 		Cell toMove = selectedCells.get(0);
 
@@ -309,19 +304,27 @@ public class GameLogic {
 		if (destination.hasPieceOf(getOtherPlayer())) {
 			// is there a piece behind? -> dont move
 			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
+			
 			if (cellBehind.isPlayerCell()) {
 				System.out.println("dont move, there is a piece behind!");
 				moved = false;
 				return;
 			}
-			// else: can I push it -> a) from the board b) on the board
-			else if (cellBehind.isGutter()) {
-				System.out.println("Piece kicked off field");
-				destination.removePiece();
-			} else if (cellBehind.isEmptyCell()) {
-				System.out.println("unfriendly cell moved");
-				cellBehind.addPiece(destination.removePiece());
+			else {
+				switch (getNumberOfSelectedCells()) {
+			case 1:
+				moved = false;
+				return;
+			case 2:
+			case 3:
+				if (cellBehind.isGutter()) destination.removePiece();
+				else if (cellBehind.isEmptyCell()) cellBehind.addPiece(destination.removePiece());
+				break;
+
+			default:
+				break;
 			}
+				}	
 		}
 		destination.addPiece(toMove.removePiece());
 	}
@@ -356,15 +359,21 @@ public class GameLogic {
 	 * @return is the cell in lane?
 	 */
 	private boolean isInLane(Cell destination) {
-
 		Cell firstCell = selectedCells.get(0);
 		Cell secondCell = selectedCells.get(1);
-
+		
 		int deltaXSelected = firstCell.getxLocation() - secondCell.getxLocation();
 		int deltaYSelected = firstCell.getyLocation() - secondCell.getyLocation();
-
+		
 		int deltaX = secondCell.getxLocation() - destination.getxLocation();
 		int deltaY = secondCell.getyLocation() - destination.getyLocation();
+		
+		if (getNumberOfSelectedCells() == 3) {	
+			Cell thirdCell = selectedCells.get(2);
+		deltaX = thirdCell.getxLocation() - destination.getxLocation();
+		deltaY = thirdCell.getyLocation() - destination.getyLocation();
+			
+		}
 
 		return deltaX == deltaXSelected && deltaY == deltaYSelected;
 	}
