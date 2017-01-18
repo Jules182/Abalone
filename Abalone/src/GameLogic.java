@@ -4,11 +4,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.paint.Color;
 
 public class GameLogic {
 
 	// FIELDS
-	
+
 	final int numberOfPlayers = 2;
 
 	private PieceType currentPlayer;
@@ -27,7 +28,7 @@ public class GameLogic {
 	public void setCells(Cell[][] cells) {
 		this.cells = cells;
 	}
-	
+
 	public int getNumberOfSelectedCells() {
 		return selectedCells.size();
 	}
@@ -211,13 +212,14 @@ public class GameLogic {
 
 		// destination is always determinined in relation to last selected cell
 		Cell lastSelected = getLastSelected();
-		
 
 		int deltaX = destinationCell.getxLocation() - lastSelected.getxLocation();
 		int deltaY = destinationCell.getyLocation() - lastSelected.getyLocation();
 
+		ArrayList<Piece> movedPieces = new ArrayList<Piece>();
+		
 		for (Cell cell : selectedCells) {
-			cell.getPiece().setPieceColor();
+			movedPieces.add(cell.getPiece());
 		}
 
 		if (selectedCells.size() == 1 || inLane(destinationCell)) {
@@ -235,9 +237,9 @@ public class GameLogic {
 					Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
 					swapPiecesParallel(cell, destination);
 				}
-			} else
+			} else {
 				moved = false;
-			return;
+			}
 		}
 
 		System.out.println("After Move: "
@@ -246,10 +248,14 @@ public class GameLogic {
 		if (moved) {
 			// wenn movement eine einzige methode ist:
 			// TODO cells[yDestination][xDestination].addPiece(cells[yToMove][xToMove].removePiece());
-//			for (Cell cell : selectedCells) {
-//				cell.getPiece().setPieceColor();
-//			}
+			
+			 for (Piece piece : movedPieces) {
+			 piece.setPieceColor();
+			 }
+
 			selectedCells = new ArrayList<Cell>();
+			unmarkDestinations();
+			checkForWinner();
 			changePlayer();
 		}
 	}
@@ -363,13 +369,12 @@ public class GameLogic {
 		int deltaX = xDestination - xToMove;
 		int deltaY = yDestination - yToMove;
 
-		if (destination.hasPieceOf(getOtherPlayer())) {
+		Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
+
+		if (destination.hasPieceOf(getOtherPlayer()) && cellBehind.isPlayerCell()) {
 			// is there a piece behind? -> dont move
-			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
-			if (cellBehind.isPlayerCell()) {
-				System.out.println("dont move, there is a piece behind!");
-				return false;
-			}
+			System.out.println("dont move, there is a piece behind!");
+			return false;
 		}
 		return true;
 	}
@@ -458,6 +463,18 @@ public class GameLogic {
 		default:
 			initializeSelectable();
 			break;
+		}
+	}
+
+	public void markDestinations() {
+		for (Cell destination : getDestinations()) {
+			destination.polygon.setFill(Color.LIGHTSTEELBLUE);
+		}
+	}
+
+	public void unmarkDestinations() {
+		for (Cell destination : getDestinations()) {
+			destination.polygon.setFill(Color.LIGHTBLUE);
 		}
 	}
 

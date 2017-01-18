@@ -12,7 +12,7 @@ public class Cell extends Control {
 	private GameLogic game;
 	private int sides = 6;
 	private int radius = 30;
-	private Polygon polygon;
+	Polygon polygon;
 	private Piece piece;
 	private int xLocation;
 	private CellType celltype;
@@ -42,42 +42,27 @@ public class Cell extends Control {
 				// select
 				game.select(this);
 
-				unmarkDestinations();
+				game.unmarkDestinations();
 				game.checkDestinations();
-				markDestinations();
+				game.markDestinations();
 			}
 			// if Cell was recently selected
 			else if (game.isLastSelected(this)) {
 				// deselect
 				game.deselect(this);
 
-				unmarkDestinations();
+				game.unmarkDestinations();
 				if (game.getNumberOfSelectedCells() > 0) {
 					game.checkDestinations();
-					markDestinations();
+					game.markDestinations();
 				}
 			} else if (game.isDestination(this) && (game.getNumberOfSelectedCells() != 0)
 					&& (getPiece().getPlayer() != game.getCurrentPlayer())) {
 				// move here
 				game.move(this);
-				game.checkForWinner();
-
-				unmarkDestinations();
 			}
 
 		});
-	}
-
-	private void markDestinations() {
-		for (Cell destination : game.getDestinations()) {
-			destination.polygon.setFill(Color.LIGHTSTEELBLUE);
-		}
-	}
-
-	private void unmarkDestinations() {
-		for (Cell destination : game.getDestinations()) {
-			destination.polygon.setFill(Color.LIGHTBLUE);
-		}
 	}
 
 	public void addPiece(Piece piece) {
