@@ -36,30 +36,20 @@ public class Cell extends Control {
 
 		setOnMouseClicked((MouseEvent event) -> {
 			System.out.println("Clicked x=" + xLocation + " y=" + yLocation);
-			// if Cell is selectable, not already selected and holds a piece of
-			// the current player
+			// if Cell is selectable, not already selected and holds a piece of the current player, select it
 			if (game.isSelectable(this) && (!game.isSelected(this)) && (hasPieceOf(game.getCurrentPlayer()))) {
-				// select
 				game.select(this);
-
-				game.unmarkDestinations();
 				game.checkDestinations();
 			}
-			// if Cell was recently selected
+			// if Cell was recently selected, deselect it
 			else if (game.isLastSelected(this)) {
-				// deselect
 				game.deselect(this);
-
-				game.unmarkDestinations();
-				if (game.getNumberOfSelectedCells() > 0) {
-					game.checkDestinations();
-				}
-			} else if (game.isDestination(this) && (game.getNumberOfSelectedCells() != 0)
-					&& (getPiece().getPlayer() != game.getCurrentPlayer())) {
+				game.checkDestinations();
+			// if it is a destination, 
+			} else if (game.isDestination(this) && (game.getNumberOfSelectedCells() != 0)) {
 				// move here
 				game.move(this);
 			}
-
 		});
 	}
 
@@ -77,13 +67,13 @@ public class Cell extends Control {
 	}
 
 	public boolean hasPieceOf(PieceType player) {
-			return (player == piece.getPlayer());
+		return (player == piece.getPlayer());
 	}
-	
+
 	public boolean isEmptyCell() {
 		return ((celltype == CellType.EMPTY) && hasPieceOf(PieceType.DEFAULT));
 	}
-	
+
 	public boolean isPlayerCell() {
 		return ((celltype == CellType.EMPTY) && (!hasPieceOf(PieceType.DEFAULT)));
 	}
@@ -91,7 +81,7 @@ public class Cell extends Control {
 	public boolean isGutter() {
 		return (celltype == CellType.GUTTER);
 	}
-	
+
 	// Tutorial to make this method:
 	// http://stackoverflow.com/questions/7198144/how-to-draw-a-n-sided-regular-circle-in-cartesian-coordinates
 	private Double[] makeVertices(int radius, int sides) {
