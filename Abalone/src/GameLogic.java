@@ -21,7 +21,6 @@ public class GameLogic {
 
 	private ArrayList<Cell> destinations = new ArrayList<Cell>();
 
-	private int round = 0;
 	private Boolean moved;
 
 	// GETTER / SETTER
@@ -407,14 +406,14 @@ public class GameLogic {
 
 	public void changePlayer() {
 		setCurrentPlayer(getOpponent());
-		round++;
 		initializeSelectable();
 	}
 
 	public PieceType getOpponent() {
-		if (round % numberOfPlayers == 0)
+		if (getCurrentPlayer() == PieceType.PLAYER1)
 			return PieceType.PLAYER2;
-		return PieceType.PLAYER1;
+		else
+			return PieceType.PLAYER1;
 	}
 
 	public void checkForWinner() {
