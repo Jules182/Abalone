@@ -9,19 +9,13 @@ import javafx.scene.paint.Color;
 public class GameLogic {
 
 	// FIELDS
-
-	final int numberOfPlayers = 2;
-
+	
 	private PieceType currentPlayer;
-	private Cell[][] cells = new Cell[11][11];
-
-	private ArrayList<Cell> selectedCells = new ArrayList<Cell>();
-
-	private ArrayList<Cell> selectableCells = new ArrayList<Cell>();
-
-	private ArrayList<Cell> destinations = new ArrayList<Cell>();
-
 	private Boolean moved;
+	private Cell[][] cells = new Cell[11][11];
+	private ArrayList<Cell> selectedCells = new ArrayList<Cell>();
+	private ArrayList<Cell> selectableCells = new ArrayList<Cell>();
+	private ArrayList<Cell> destinations = new ArrayList<Cell>();
 
 	// GETTER / SETTER
 
@@ -35,10 +29,6 @@ public class GameLogic {
 
 	public boolean isSelectable(Cell cell) {
 		return selectableCells.contains(cell) && (selectedCells.size() < 3);
-	}
-
-	public void emptySelectableCells() {
-		selectableCells = new ArrayList<Cell>();
 	}
 
 	public boolean isSelected(Cell cell) {
@@ -72,27 +62,31 @@ public class GameLogic {
 		return cell == selectedCells.get(selectedCells.size() - 1);
 	}
 
+	public boolean isDestination(Cell cell) {
+		return destinations.contains(cell);
+	}
+
+	private ArrayList<Cell> getDestinations() {
+		return destinations;
+	}
+
 	private Cell getLastSelected() {
 		if (selectedCells.isEmpty())
 			return null;
 		return selectedCells.get(selectedCells.size() - 1);
 	}
 
-	public ArrayList<Cell> getDestinations() {
-		return destinations;
-	}
-
-	public boolean isDestination(Cell cell) {
-		return destinations.contains(cell);
-	}
-
-	// METHODS
+	/**
+	 *  METHODS
+	 */
 
 	// SELECTABLE PIECES AND DESTINATIONS
 
-	public void updateSelectablePieces() {
-		// update selectablePieces properly depending on how many pieces are selected
-
+	
+	/**
+	 *  update selectablePieces properly depending on how many pieces are selected
+	 */
+	private void updateSelectablePieces() {
 		switch (getNumberOfSelectedCells()) {
 		case 0:
 			initializeSelectable();
@@ -125,9 +119,9 @@ public class GameLogic {
 	}
 
 	/**
-	 * Detects all neighbours of a cell and removes the non-neighbor cells from selectable
+	 * Detects all neighbours of a cell and removes the non-neighbor cells from selectableCells
 	 */
-	public void findAllNeighbours() {
+	private void findAllNeighbours() {
 
 		initializeSelectable();
 
@@ -150,10 +144,10 @@ public class GameLogic {
 	}
 
 	/**
-	 * Detects the third piece in a line which is the last selectable cell.
+	 * Detects the third piece in a line which is the last selectable cell when two are selected
 	 */
-	public void findThirdInLine() {
-
+	private void findThirdInLine() {
+		
 		initializeSelectable();
 
 		Cell firstCell = selectedCells.get(0);
@@ -164,11 +158,11 @@ public class GameLogic {
 
 		Cell lastPossibleCell = null;
 
-		int xOfThrirdPiece = secondCell.getxLocation() - deltaX;
-		int yOfThrirdPiece = secondCell.getyLocation() - deltaY;
+		int xOfThirdPiece = secondCell.getxLocation() - deltaX;
+		int yOfThirdPiece = secondCell.getyLocation() - deltaY;
 
 		for (Cell selectableCell : selectableCells) {
-			if (selectableCell.getxLocation() == xOfThrirdPiece && selectableCell.getyLocation() == yOfThrirdPiece) {
+			if (selectableCell.getxLocation() == xOfThirdPiece && selectableCell.getyLocation() == yOfThirdPiece) {
 				lastPossibleCell = selectableCell;
 			}
 		}
@@ -176,6 +170,10 @@ public class GameLogic {
 		selectableCells = new ArrayList<Cell>();
 		if (lastPossibleCell != null)
 			selectableCells.add(lastPossibleCell);
+	}
+
+	private void emptySelectableCells() {
+		selectableCells = new ArrayList<Cell>();
 	}
 
 	/**
@@ -208,13 +206,13 @@ public class GameLogic {
 		markDestinations();
 	}
 
-	public void markDestinations() {
+	private void markDestinations() {
 		for (Cell destination : getDestinations()) {
 			destination.polygon.setFill(Color.LIGHTSTEELBLUE);
 		}
 	}
 
-	public void unmarkDestinations() {
+	private void unmarkDestinations() {
 		for (Cell destination : getDestinations()) {
 			destination.polygon.setFill(Color.LIGHTBLUE);
 		}
@@ -245,15 +243,17 @@ public class GameLogic {
 		if (selectedCells.size() == 1 || isInLane(destinationCell)) {
 			movePiecesInLane(destinationCell);
 		} else {
-			// parallel movement
-			boolean letsdo = true;
+			// check: parallel movement possible?
+			boolean parallelMove = true;
 			for (Cell cell : selectedCells) {
 				Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
+				// if there is a player cell in the way
 				if (destination.isPlayerCell()) {
-					letsdo = false;
+					parallelMove = false;
 				}
 			}
-			if (letsdo) {
+			// 
+			if (parallelMove) {
 				for (Cell toMove : selectedCells) {
 					Cell destination = cells[toMove.getyLocation() + deltaY][toMove.getxLocation() + deltaX];
 					destination.addPiece(toMove.removePiece());
@@ -403,19 +403,19 @@ public class GameLogic {
 		return deltaX == deltaXSelected && deltaY == deltaYSelected;
 	}
 
-	public void changePlayer() {
+	private void changePlayer() {
 		setCurrentPlayer(getOpponent());
 		initializeSelectable();
 	}
 
-	public PieceType getOpponent() {
+	private PieceType getOpponent() {
 		if (getCurrentPlayer() == PieceType.PLAYER1)
 			return PieceType.PLAYER2;
 		else
 			return PieceType.PLAYER1;
 	}
 
-	public void checkForWinner() {
+	private void checkForWinner() {
 
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText(null);
@@ -465,8 +465,10 @@ public class GameLogic {
 
 	public final void setPlayerName(String value) {
 		playerName.set(value);
-		if (value == "PLAYER1") playerColor.set("-fx-background-color: green");
-		if (value == "PLAYER2") playerColor.set("-fx-background-color: red");
+		if (value == "PLAYER1")
+			playerColor.set("-fx-background-color: green");
+		if (value == "PLAYER2")
+			playerColor.set("-fx-background-color: red");
 	}
 
 	// property getters

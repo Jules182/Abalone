@@ -16,6 +16,7 @@ class CustomControl extends Control {
 
 		setOnKeyPressed((KeyEvent event) -> {
 			if (event.getCode() == KeyCode.SPACE) {
+				this.game = new GameLogic();
 				resetBoard();
 			}
 			if (event.getCode() == KeyCode.ESCAPE)

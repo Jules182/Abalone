@@ -47,6 +47,7 @@ public class AbaloneApplication extends Application {
 		mainlayout.setRight(sidebar);
 
 		miReset.setOnAction((ActionEvent event) -> {
+			game = new GameLogic();
 			cc_custom.resetBoard();
 		});
 

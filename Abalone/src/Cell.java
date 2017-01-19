@@ -42,7 +42,7 @@ public class Cell extends Control {
 			else if (game.isLastSelected(this)) {
 				game.deselect(this);
 				game.checkDestinations();
-				// if it is a destination,
+				// if it is a destination, try to move it
 			} else if (game.isDestination(this) && (game.getNumberOfSelectedCells() != 0)) {
 				// move here
 				game.move(this);
