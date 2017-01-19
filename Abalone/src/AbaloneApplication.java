@@ -9,9 +9,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class AbaloneApplication extends Application {
-	
+
 	private GameLogic game;
-	
+
 	private BorderPane mainlayout;
 	private CustomControl cc_custom;
 	// menu
@@ -21,7 +21,6 @@ public class AbaloneApplication extends Application {
 	private Menu menuGame;
 
 	private Sidebar sidebar;
-	
 
 	@Override
 	public void init() {
@@ -40,7 +39,7 @@ public class AbaloneApplication extends Application {
 		miQuit = new MenuItem("Quit [ESC]");
 
 		menuGame.getItems().addAll(miReset, miQuit);
-		
+
 		// add panes
 		mainlayout.setTop(menubar);
 		mainlayout.setCenter(cc_custom);
@@ -58,7 +57,9 @@ public class AbaloneApplication extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Abalone Game Team Markus&Julian");
-		primaryStage.setScene(new Scene(mainlayout, 700, 600));
+		Scene scene = new Scene(mainlayout, 750, 600);
+		scene.getStylesheets().add("style.css");
+		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		primaryStage.show();
 	}

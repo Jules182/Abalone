@@ -14,11 +14,11 @@ class Piece extends Group {
 	public PieceType getPlayer() {
 		return player;
 	}
-	
+
 	public void setSelectColor() {
 		ball.setFill(player.getSelectColor());
 	}
-	
+
 	public void setPieceColor() {
 		ball.setFill(player.getPieceColor());
 	}
@@ -26,6 +26,5 @@ class Piece extends Group {
 	// private fields of the class
 	private Circle ball; // ellipse for rendering the piece
 	private PieceType player; // maintain a copy of the piece type we have
-	
 
 }

@@ -1,5 +1,4 @@
 
-
 // basic implementation of a skin
 // imports necessary for this class to work
 import javafx.scene.control.Skin;

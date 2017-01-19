@@ -18,7 +18,7 @@ import javafx.scene.paint.Color;
 public class AbaloneBoard extends Pane {
 
 	private GameLogic game;
-	
+
 	private VBox vbox;
 	private HBox[] hboxes;
 	private Cell[][] cells = new Cell[11][11];
