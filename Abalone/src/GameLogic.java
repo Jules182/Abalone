@@ -255,7 +255,7 @@ public class GameLogic {
 			for (Cell cell : selectedCells) {
 				Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
 				if (destination.isPlayerCell()) {
-					System.out.println("dont move, there is no space!");
+					System.out.println("don't move, there is no space!");
 					letsdo = false;
 				}
 			}
@@ -299,13 +299,13 @@ public class GameLogic {
 		int deltaX = xDestination - getLastSelected().getxLocation();
 		int deltaY = yDestination - getLastSelected().getyLocation();
 
-		// is there a piece of the other player?
-		if (destination.hasPieceOf(getOtherPlayer())) {
-			// is there a piece behind? -> dont move
+		// is there an opponent's piece?
+		if (destination.hasPieceOf(getOpponent())) {
+			// is there a piece behind? -> don't move
 			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
 
 			if (cellBehind.hasPieceOf(getCurrentPlayer())) {
-				System.out.println("dont move, there is a piece behind!");
+				System.out.println("don't move, there is a piece behind!");
 				moved = false;
 				return;
 			} else {
@@ -327,27 +327,27 @@ public class GameLogic {
 					break;
 				case 3:
 					Cell cell2Behind = null;
-					// move one piece
-					if (cellBehind.isGutter())
-						destination.removePiece();
-					else if (cellBehind.isEmptyCell())
-						cellBehind.addPiece(destination.removePiece());
-
 					try {
 						cell2Behind = cells[yDestination + deltaY + deltaY][xDestination + deltaX + deltaX];
 					} catch (ArrayIndexOutOfBoundsException e) {
 						moved = false;
 						return;
 					}
+					
+					// move one piece
+					if (cellBehind.isGutter())
+						destination.removePiece();
+					else if (cellBehind.isEmptyCell())
+						cellBehind.addPiece(destination.removePiece());
 
 					// move two pieces
-					if (cell2Behind.isPlayerCell()) {
+					else if (cell2Behind.isPlayerCell()) {
 						moved = false;
 						return;
 					} else if (cell2Behind.isGutter()) {
 						cellBehind.removePiece();
 						cellBehind.addPiece(destination.removePiece());
-					} else if (cellBehind.hasPieceOf(getOtherPlayer())) {
+					} else if (cellBehind.hasPieceOf(getOpponent())) {
 						cell2Behind.addPiece(cellBehind.removePiece());
 						cellBehind.addPiece(destination.removePiece());
 					}
@@ -411,12 +411,12 @@ public class GameLogic {
 	}
 
 	public void changePlayer() {
-		setCurrentPlayer(getOtherPlayer());
+		setCurrentPlayer(getOpponent());
 		round++;
 		initializeSelectable();
 	}
 
-	public PieceType getOtherPlayer() {
+	public PieceType getOpponent() {
 		if (round % numberOfPlayers == 0)
 			return PieceType.PLAYER2;
 		return PieceType.PLAYER1;
