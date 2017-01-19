@@ -14,12 +14,10 @@ public class Sidebar extends VBox {
 		Label player1 = new Label("Player 1");
 		player1.setId("player1");
 		player1.getStyleClass().add("heading");
-		// player1.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
 
 		Label player2 = new Label("Player 2");
 		player2.setId("player2");
 		player2.getStyleClass().add("heading");
-		// player2.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
 
 		Label piecesTakenP1 = new Label("Pieces taken: ");
 		Label piecesTakenP1Display = new Label();
