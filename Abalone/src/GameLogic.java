@@ -238,9 +238,6 @@ public class GameLogic {
 			movedPieces.add(cell.getPiece());
 		}
 
-		System.out.println("Before Move: "
-				+ cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
-
 		// destination is always determined in relation to last selected cell
 		Cell lastSelected = getLastSelected();
 
@@ -255,7 +252,6 @@ public class GameLogic {
 			for (Cell cell : selectedCells) {
 				Cell destination = cells[cell.getyLocation() + deltaY][cell.getxLocation() + deltaX];
 				if (destination.isPlayerCell()) {
-					System.out.println("don't move, there is no space!");
 					letsdo = false;
 				}
 			}
@@ -269,15 +265,13 @@ public class GameLogic {
 			}
 		}
 
-		System.out.println("After Move: "
-				+ cells[destinationCell.getyLocation()][destinationCell.getxLocation()].getPiece().getPlayer());
-
 		if (moved) {
 			for (Piece piece : movedPieces) {
 				piece.setPieceColor();
 			}
 			selectedCells = new ArrayList<Cell>();
 			unmarkDestinations();
+			setPiecesLeft(getPiecesLeft(PieceType.PLAYER1), getPiecesLeft(PieceType.PLAYER2));
 			checkForWinner();
 			changePlayer();
 		}
@@ -305,7 +299,6 @@ public class GameLogic {
 			Cell cellBehind = cells[yDestination + deltaY][xDestination + deltaX];
 
 			if (cellBehind.hasPieceOf(getCurrentPlayer())) {
-				System.out.println("don't move, there is a piece behind!");
 				moved = false;
 				return;
 			} else {
@@ -326,6 +319,15 @@ public class GameLogic {
 						cellBehind.addPiece(destination.removePiece());
 					break;
 				case 3:
+					// move one piece
+					if (cellBehind.isGutter()) {
+						destination.removePiece();
+						break;
+					} else if (cellBehind.isEmptyCell()) {
+						cellBehind.addPiece(destination.removePiece());
+						break;
+					}
+
 					Cell cell2Behind = null;
 					try {
 						cell2Behind = cells[yDestination + deltaY + deltaY][xDestination + deltaX + deltaX];
@@ -333,15 +335,8 @@ public class GameLogic {
 						moved = false;
 						return;
 					}
-					
-					// move one piece
-					if (cellBehind.isGutter())
-						destination.removePiece();
-					else if (cellBehind.isEmptyCell())
-						cellBehind.addPiece(destination.removePiece());
-
 					// move two pieces
-					else if (cell2Behind.isPlayerCell()) {
+					if (cell2Behind.isPlayerCell()) {
 						moved = false;
 						return;
 					} else if (cell2Behind.isGutter()) {
@@ -423,7 +418,6 @@ public class GameLogic {
 	}
 
 	public void checkForWinner() {
-		setPiecesLeft(getPiecesLeft(PieceType.PLAYER1), getPiecesLeft(PieceType.PLAYER2));
 
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText(null);
@@ -438,8 +432,6 @@ public class GameLogic {
 			alert.setContentText("Player 1 won!");
 			alert.showAndWait();
 		}
-
-		System.out.println("P1: " + getPiecesLeft(PieceType.PLAYER1) + " - P2: " + getPiecesLeft(PieceType.PLAYER2));
 
 	}
 
