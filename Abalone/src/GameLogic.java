@@ -200,7 +200,6 @@ public class GameLogic {
 
 				if (distance < 1.5 && sum != 0 && checkForCrash(selectedCell, cell)
 						&& (!cell.hasPieceOf(currentPlayer))) {
-					System.out.println("Add x=" + cell.getxLocation() + " y=" + cell.getyLocation());
 
 					destinations.add(cell);
 				}
@@ -450,6 +449,7 @@ public class GameLogic {
 
 	// properties to show changing values in labels
 	private StringProperty playerName = new SimpleStringProperty();
+	private StringProperty playerColor = new SimpleStringProperty();
 	private StringProperty p1PiecesLeft = new SimpleStringProperty();
 	private StringProperty p2PiecesLeft = new SimpleStringProperty();
 	private StringProperty p1PiecesTaken = new SimpleStringProperty();
@@ -465,11 +465,17 @@ public class GameLogic {
 
 	public final void setPlayerName(String value) {
 		playerName.set(value);
+		if (value == "PLAYER1") playerColor.set("-fx-background-color: green");
+		if (value == "PLAYER2") playerColor.set("-fx-background-color: red");
 	}
 
 	// property getters
 	public StringProperty playerNameProperty() {
 		return playerName;
+	}
+
+	public StringProperty playerColorProperty() {
+		return playerColor;
 	}
 
 	public StringProperty getP1PiecesLeftProperty() {

@@ -33,7 +33,6 @@ public class Cell extends Control {
 			createHexagon();
 
 		setOnMouseClicked((MouseEvent event) -> {
-			System.out.println("Clicked x=" + xLocation + " y=" + yLocation);
 			// if Cell is selectable, not already selected and holds a piece of the current player, select it
 			if (game.isSelectable(this) && (!game.isSelected(this)) && (hasPieceOf(game.getCurrentPlayer()))) {
 				game.select(this);

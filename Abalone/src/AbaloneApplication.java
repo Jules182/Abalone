@@ -29,6 +29,7 @@ public class AbaloneApplication extends Application {
 		mainlayout = new BorderPane();
 		cc_custom = new CustomControl(game);
 		sidebar = new Sidebar(game);
+		sidebar.setPrefWidth(150);
 
 		// menu bar
 		menubar = new MenuBar();
