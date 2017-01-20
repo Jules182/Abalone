@@ -16,8 +16,13 @@ public class GameLogic {
 	private ArrayList<Cell> selectedCells = new ArrayList<Cell>();
 	private ArrayList<Cell> selectableCells = new ArrayList<Cell>();
 	private ArrayList<Cell> destinations = new ArrayList<Cell>();
+	private CustomControl customControl;
 
 	// GETTER / SETTER
+
+	public GameLogic(CustomControl customControl) {
+		this.customControl = customControl;
+	}
 
 	public void setCells(Cell[][] cells) {
 		this.cells = cells;
@@ -357,10 +362,11 @@ public class GameLogic {
 	// CHECKS
 
 	/**
+	 * For destination highlighting: would the selected cell crash into other cells?
 	 * 
-	 * @param toMove
-	 * @param destination
-	 * @return
+	 * @param toMove: cell to move
+	 * @param destination: cell to check
+	 * @return move possible?
 	 */
 
 	private boolean checkForCrash(Cell toMove, Cell destination) {
@@ -424,11 +430,13 @@ public class GameLogic {
 		if (getPiecesLeft(PieceType.PLAYER1) == 8) {
 			alert.setContentText("Player 2 won!");
 			alert.showAndWait();
+			customControl.resetGame();
 		}
 
 		if (getPiecesLeft(PieceType.PLAYER2) == 8) {
 			alert.setContentText("Player 1 won!");
 			alert.showAndWait();
+			customControl.resetGame();
 		}
 
 	}
